@@ -14,7 +14,7 @@ launch it: java -jar AstralPathSQL.jar
 **Client**:Download /Client/AstralPathSQL.jar
 launch it in a save way
 
-#Config
+# Config
 The config of it (info.properties) include port , all_connect , and change_time   
 You can change the config (such as the port) to change application's port .Of course, you should do it after stop this application
 
