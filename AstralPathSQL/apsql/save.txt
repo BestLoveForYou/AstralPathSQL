@@ -1,0 +1,1 @@
+id:2|username:付一欧|password:null|money:99999.0|age:17|hiredate:2022.07.11|other:爱你~§id:1|username:姚博宇|password:abcdef20060113|money:9999999.0|age:17|hiredate:2022.07.11|other:服主§id:3|username:姚叶子|password:null|money:99999.0|age:5|hiredate:2022.07.11|other:妹妹§id:4|username:龙启云|password:null|money:9999999.0|age:15|hiredate:2022.07.11|other:朋友§
