@@ -12,7 +12,7 @@ At present, balanced binary tree is used in data structure, and its unique data 
 launch it: java -jar AstralPathSQL.jar   
 
 **Client**:Download /Client/AstralPathSQL.jar
-launch it in a save way
+launch it in a same way
 
 # Config
 The config of it (info.properties) include port , all_connect , and change_time   
