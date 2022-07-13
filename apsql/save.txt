@@ -1,0 +1,1 @@
+id:0|username:test|password:null|money:0.0|age:0|hiredate:2022-07-13|other:测试数据!千万不要在无其他数据时把这个删除!§id:2|username:付一欧|password:null|money:99999.0|age:17|hiredate:2007-10-14|other:爱你~§
