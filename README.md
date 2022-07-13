@@ -8,10 +8,10 @@
 At present, balanced binary tree is used in data structure, and its unique data storage structure makes it still competent in the face of a large amount of data
 
 # Usage
-**Server**:Download /Server/AstralPathSQL.jar  
+**Server**:Download /out/artifacts/AstralPathSQLServer_jar/AstralPathSQL.jar
 launch it: java -jar AstralPathSQL.jar   
 
-**Client**:Download /Client/AstralPathSQL.jar
+**Client**:Download /out/artifacts/AstralPathSQL_jar/AstralPathSQL.jar
 launch it in a same way
 
 # Config
