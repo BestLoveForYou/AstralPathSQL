@@ -9,7 +9,7 @@ import java.nio.channels.SocketChannel;
 
 public class EchoClient {
     public static int PORT = 9999; 								// 绑定端口
-    public static String HOST = "47.96.154.95"; 					// 连接主机
+    public static String HOST = "localhost"; 					// 连接主机
     public static void main(String[] args) throws Exception {
         try {
             System.out.println("欢迎使用AstralPathSQL!\n请先输入连接IP和端口!\n例如:127.0.0.1:9999");

@@ -1,8 +1,7 @@
 package org.astralpathsql.server;
 
-import org.astralpathsql.autoC.ClassInstanceFactory;
 import org.astralpathsql.autoC.DoIT;
-import org.astralpathsql.autoC.SaveTask;
+import org.astralpathsql.been.Cache;
 import org.astralpathsql.been.Emp;
 import org.astralpathsql.client.InputUtil;
 import org.astralpathsql.file.Add;
@@ -10,9 +9,7 @@ import org.astralpathsql.file.Filer;
 import org.astralpathsql.properties.ProRead;
 import org.astralpathsql.tree.BalancedBinaryTree;
 
-import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -20,14 +17,13 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.astralpathsql.print.ColorTest.getFormatLogString;
 
 public class MainServer {
-    public static String version = "1.000.20220711";
+    public static String version = "1.000.20220712";
     public static BalancedBinaryTree<Emp> tree = new BalancedBinaryTree<Emp>();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
@@ -35,11 +31,11 @@ public class MainServer {
     public static ServerSocketChannel serverSocketChannel = null;
     public static Set<SelectionKey> selectedKeys = null; 	// 获取全部连接通道
     public static Iterator<SelectionKey> selectionIter = null;
+    public static Cache<Integer, Emp> cache = new Cache<>();
     public static boolean flag = true;
     public static int PORT = 9999;
     public static void main(String[] args) throws Exception {
         try {
-
             long start = System.currentTimeMillis();
             System.out.println(getFormatLogString("初始化中",34,1));
             Filer.createInFirst();

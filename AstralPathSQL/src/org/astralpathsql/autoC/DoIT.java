@@ -3,6 +3,8 @@ package org.astralpathsql.autoC;
 import org.astralpathsql.been.Emp;
 import org.astralpathsql.file.Filer;
 
+import java.util.Map;
+
 import static org.astralpathsql.server.MainServer.*;
 import static org.astralpathsql.server.MainServer.now_Connect;
 
@@ -72,6 +74,38 @@ public class DoIT {
                 tree.remove(sc);
                 tree.add(emp);
                 writeMessage = "1";
+            }
+            /*
+                以下是缓存功能
+             */
+            if (sp[0].equals("cache")) {
+                if (sp[1].equals("setTime")) {
+                    cache.setDelaySeconds(Long.parseLong(sp[2]));
+                }
+                if (sp[1].equals("getTime")) {
+                    cache.getDelaySeconds(Long.parseLong(sp[2]));
+                }
+                if (sp[1].equals("insert")) {
+                    if (sp[2].contains("§")) {
+                        String res[] = sp[1].split("§");
+                        int x;
+                        for (x = 0; x < res.length; x++) {
+                            Emp emp = ClassInstanceFactory.create(Emp.class, res[x]);    // 工具类自动设置
+                            cache.put(emp.getId(),emp);
+                        }
+                        writeMessage = String.valueOf(x);
+                    } else {
+                        Emp emp = ClassInstanceFactory.create(Emp.class, sp[2]) ;	// 工具类自动设置
+                        cache.put(cache.getCacheObjects().size(),emp);
+                        writeMessage = "1";
+                    }
+                }
+                if (sp[1].equals("get")) {
+                    writeMessage = " ";
+                    for (int x = 0; x <  cache.getCacheObjects().size(); x++) {
+                        writeMessage = writeMessage + "|" + cache.get(x);
+                    }
+                }
             }
             if (sp[0].equals("status")) {
                 writeMessage = "版本:" + version + "\n历史连接数:" + all_Connect + "\n目前连接数:" + now_Connect;
