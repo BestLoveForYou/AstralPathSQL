@@ -81,13 +81,14 @@ public class DoIT {
             if (sp[0].equals("cache")) {
                 if (sp[1].equals("setTime")) {
                     cache.setDelaySeconds(Long.parseLong(sp[2]));
+                    writeMessage = "1";
                 }
                 if (sp[1].equals("getTime")) {
-                    cache.getDelaySeconds(Long.parseLong(sp[2]));
+                    writeMessage = String.valueOf(cache.getDelaySeconds(Long.parseLong(sp[2])));
                 }
                 if (sp[1].equals("insert")) {
                     if (sp[2].contains("§")) {
-                        String res[] = sp[1].split("§");
+                        String res[] = sp[2].split("§");
                         int x;
                         for (x = 0; x < res.length; x++) {
                             Emp emp = ClassInstanceFactory.create(Emp.class, res[x]);    // 工具类自动设置
@@ -105,6 +106,13 @@ public class DoIT {
                     for (int x = 0; x <  cache.getCacheObjects().size(); x++) {
                         writeMessage = writeMessage + "|" + cache.get(x);
                     }
+                }
+                if (sp[1].equals("submit")) {
+                    int x;
+                    for (x = 0; x < cache.getCacheObjects().size(); x++) {
+                         tree.add(cache.get(x));
+                    }
+                    writeMessage = String.valueOf(x);
                 }
             }
             if (sp[0].equals("status")) {

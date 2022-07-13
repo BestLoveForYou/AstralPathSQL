@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 import static org.astralpathsql.print.ColorTest.getFormatLogString;
 
 public class MainServer {
-    public static String version = "1.000.20220712";
+    public static String version = "1.000.20220713";
     public static BalancedBinaryTree<Emp> tree = new BalancedBinaryTree<Emp>();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
