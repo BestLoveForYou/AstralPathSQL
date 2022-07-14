@@ -1,0 +1,1 @@
+name:cc|table:char username,char password§name:try|table:varchar i§name:c22c|table:varchar ww,int ii§
