@@ -87,22 +87,36 @@ public class DoIT {
                     Table t = new Table();
                     String a =readMessage;
                     a = a.replaceAll("create table ","");
-                    a = a.replaceAll("\\);","");
+                    a = a.replaceAll("\\)","");
+                    a = a.replaceAll(";","");
                     String result2 [] = a.split(",");
                     String b = null;//属性
-                    String n = null;
                     for (int x = 0 ; x <result2.length ; x ++) {
                         if (x==0) {
                             String r[] = a.split("\\(");
                             t.setName(r[0]);
-                            n = r[0];
-                            b = r[1];
+                            result2[0] = result2[0].replaceAll(r[0] + "\\(","");
+                            String avc[] =  result2[x].split(" ");//扭转
+                            b = avc[1] + " " + avc[0];
+                            System.out.println(b);
                             continue;
                         }
-                       b = b + "|";
+                        String avc[] =  result2[x].split(" ");//扭转
+                        String i = avc[1] + " " + avc[0];
+                        b = b + "," +  i;
                     }
+                    System.out.println(b);
                     t.setTable(b);
-                    MainServer.ta.put(n,t);
+                    MainServer.ta.put(t.getName().replaceAll("name:",""),t);
+                    writeMessage = "1";
+                }
+            }
+            /**
+             * 删除表
+             */
+            if (sp[0].equals("drop")) {
+                if(sp[1].equals("table")) {
+                    ta.remove(sp[2]);
                     writeMessage = "1";
                 }
             }
@@ -215,7 +229,7 @@ public class DoIT {
                 writeMessage = "[INFO]Connected closed...";			// 结束消息
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
         return writeMessage;
     }
