@@ -27,12 +27,12 @@ You can change the config (such as the port) to change application's port .Of co
    Added cache function to improve query speed
   
 # v1.100 series
-      Epic update!!!  
-         Change the syntax to SQL syntax! Compatible with some SQL languages Others are being manufactured    
-         More support!!!   
+ Epic update!!!  
+  Change the syntax to SQL syntax! Compatible with some SQL languages Others are being manufactured    
+  More support!!!   
  ## v1.100.20220714 Date:2022-07-14   
  
  ## v1.101.20220714   
-      Fixed known bugs, including the creation and use of data tables, SQL syntax, etc
+Fixed known bugs, including the creation and use of data tables, SQL syntax, etc
                      
 
