@@ -161,11 +161,13 @@ public class DoIT {
             }
             /**
              * 更新数据功能
+             * 已知Bug: 2022-07-15:数据不全 已修复
              */
             if (sp[0].equals("update")) {
                 if (sp[2].equals("set")) {
                     sp[5] = sp[5].replaceAll("=","'") + "'";
                     String a = tree.forT(sp[1],sp[5]);
+                    System.out.println(a);
                     String table = sp[1];
                     String work = sp[3];
                     String ca[] = work.split("=");
@@ -174,8 +176,13 @@ public class DoIT {
                     String res[] = a.split("\\|");
                     int ind = res[2].lastIndexOf(ca[0]);
                     String handle = res[2].substring(0,ind);
-                    handle = res[0] + "|" + res[1] + "|" + handle + work + "|table:" + table + "§";
+                    String end = res[2].substring(ind + work.length() + 2);
+                    System.out.println(end);
+                    System.out.println(handle + work + end);
+                    handle = res[0] + "|" + res[1] + "|" + handle + work + end + "|table:" + table + "§";
+                    System.out.println(handle);
                     COREINFORMATION c = add(handle);
+                    System.out.println(c.toString());
                     tree.add(c);
                     writeMessage = "1";
                 }
@@ -246,6 +253,7 @@ public class DoIT {
         } catch (Exception e) {
 
         }
+        System.gc();
         return writeMessage;
     }
 }
