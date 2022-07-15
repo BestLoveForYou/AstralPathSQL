@@ -36,7 +36,11 @@ public class Table {
 
     public static void read() {
         ByteArrayOutputStream bos = Filer.readTable();
-        String n = new String(bos.toByteArray());
+        String n = "";
+        n = new String(bos.toByteArray());
+        if (n.isEmpty()) {
+            n = "name:Test|table:char 请勿在无其他表时删除§";
+        }
         String res[] = n.split("§");
 
         try {

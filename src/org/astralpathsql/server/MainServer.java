@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 import static org.astralpathsql.print.ColorTest.getFormatLogString;
 
 public class MainServer {
-    public static String version = "1.101.20220714";
+    public static String version = "1.102.20220714";
     public static BalancedBinaryTree<COREINFORMATION> tree = new BalancedBinaryTree<COREINFORMATION>();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
@@ -35,24 +35,27 @@ public class MainServer {
     public static Map<String,Table> ta = new HashMap<>();
     public static boolean flag = true;
     public static int PORT = 9999;
+    /**
+     * @author Saturn
+     * AstralPathSQL System
+     *
+     */
     public static void main(String[] args) throws Exception {
+        System.out.println(getFormatLogString("版本:" + version + "\n" + System.getProperty("os.name"),35,4));
         try {
             long start = System.currentTimeMillis();
             System.out.println(getFormatLogString("初始化中",34,1));
-            Filer.createInFirst();
-            Table.read();
-            prop = ProRead.read();
+            Filer.createInFirst();//对象保存文件
+            Table.read();//生成表
+            System.out.println(getFormatLogString("数据,数据表 加载完成",34,1));
+            prop = ProRead.read();//加载配置文件
             PORT = Integer.parseInt(prop.getProperty("port"));
             System.out.println(getFormatLogString("平衡二叉树加载中",34,1));
-            tree = Add.addin(tree);
+            tree = Add.addin(tree);//二叉树加载
             System.out.println(getFormatLogString("成功!",32,1));
             System.out.println(getFormatLogString("线程池加载中",34,1));
             ExecutorService executorService = Executors.newFixedThreadPool(19999999);
             System.out.println(getFormatLogString("成功!",32,1));
-            /**
-             * @author Saturn
-             *
-             */
             all_Connect = Integer.valueOf(prop.getProperty("all_connect"));
             executorService.submit(() -> {
                 System.out.println(getFormatLogString("定时任务已启动成功!",32,1));
@@ -67,12 +70,11 @@ public class MainServer {
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-
                 }
             });
             executorService.submit(() -> {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
 
                 }

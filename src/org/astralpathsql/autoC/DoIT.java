@@ -21,6 +21,7 @@ public class DoIT {
      * @return
      */
     public static String doit(String readMessage) {
+
         String sp[] = readMessage.split(" ");
         String writeMessage = "无效指令!";
         try {
@@ -60,7 +61,7 @@ public class DoIT {
                                 add = add + prof[1] + value[x] + ";";
                             }
                         }
-                        c.setId(tree.size() + 1);
+                        c.setId(tree.size());
                         c.setTable(res[0]);
                         c.setINFO(add);
                         SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
@@ -98,14 +99,12 @@ public class DoIT {
                             result2[0] = result2[0].replaceAll(r[0] + "\\(","");
                             String avc[] =  result2[x].split(" ");//扭转
                             b = avc[1] + " " + avc[0];
-                            System.out.println(b);
                             continue;
                         }
                         String avc[] =  result2[x].split(" ");//扭转
                         String i = avc[1] + " " + avc[0];
                         b = b + "," +  i;
                     }
-                    System.out.println(b);
                     t.setTable(b);
                     MainServer.ta.put(t.getName().replaceAll("name:",""),t);
                     writeMessage = "1";
@@ -176,7 +175,6 @@ public class DoIT {
                     int ind = res[2].lastIndexOf(ca[0]);
                     String handle = res[2].substring(0,ind);
                     handle = res[0] + "|" + res[1] + "|" + handle + work + "|table:" + table + "§";
-                    System.out.println(handle);
                     COREINFORMATION c = add(handle);
                     tree.add(c);
                     writeMessage = "1";
@@ -224,6 +222,23 @@ public class DoIT {
             }
             if (sp[0].equals("status")) {
                 writeMessage = "版本:" + version + "\n历史连接数:" + all_Connect + "\n目前连接数:" + now_Connect;
+            }
+            if (sp[0].equals("user")) {
+                if (sp[1].equals("add")) {
+                    if(sp[2].contains(":")) {
+                        Filer.addUser(sp[2]);
+                        writeMessage = "用户更新-时间:" + new Date();
+                    } else {
+                        writeMessage = "null";
+                    }
+                }
+                if (sp[1].equals("remove")) {
+                    Filer.removeUser(sp[2]);
+                    writeMessage = "用户更新-时间:" + new Date();
+                }
+                if (sp[1].equals("all")) {
+                    writeMessage = Filer.getUser();
+                }
             }
             if ("exit".equals(readMessage)) { 						// 结束指令
                 writeMessage = "[INFO]Connected closed...";			// 结束消息
