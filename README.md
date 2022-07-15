@@ -31,8 +31,11 @@ You can change the config (such as the port) to change application's port .Of co
   Change the syntax to SQL syntax! Compatible with some SQL languages Others are being manufactured    
   More support!!!   
  ## v1.100.20220714 Date:2022-07-14   
- 
  ## v1.101.20220714   
 Fixed known bugs, including the creation and use of data tables, SQL syntax, etc
+ ## v1.102.20220714   
+- New functions are available! Users need to log in to connect. The default login account and password are root:123456, and the format needs to be
+Account Name: password.
+- Fixed several known bugs, including data table deletion, user deletion and reading, etc
                      
 
