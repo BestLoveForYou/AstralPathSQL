@@ -36,6 +36,8 @@ Fixed known bugs, including the creation and use of data tables, SQL syntax, etc
  ## v1.102.20220714   
 - New functions are available! Users need to log in to connect. The default login account and password are root:123456, and the format needs to be
 Account Name: password.
+
+ ## 1.103.20220715 
 - Fixed several known bugs, including data table deletion, user deletion and reading, etc
                      
 
