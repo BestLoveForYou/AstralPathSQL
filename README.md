@@ -21,13 +21,13 @@ You can change the config (such as the port) to change application's port .Of co
 # Update records
 # v1.000 series
    ## v1.000.20220711   
-   This is the original version, which provides binary tree and basic functions
+   - This is the original version, which provides binary tree and basic functions
    
    ## v1.000.20220713
-   Added cache function to improve query speed
+   - Added cache function to improve query speed
   
 # v1.100 series
- Epic update!!!  
+ - Epic update!!!  
   Change the syntax to SQL syntax! Compatible with some SQL languages Others are being manufactured    
   More support!!!   
  ## v1.100.20220714 Date:2022-07-14   
