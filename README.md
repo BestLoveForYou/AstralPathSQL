@@ -37,5 +37,7 @@ Fixed known bugs, including the creation and use of data tables, SQL syntax, etc
 - New functions are available! Users need to log in to connect. The default login account and password are root:123456, and the format needs to be
 Account Name: password.
 - Fixed several known bugs, including data table deletion, user deletion and reading, etc
-                     
+
+ ## 1.103.20220715
+ - Several known bugs have been fixed. The biggest bugs are the execution of update and incomplete data
 
