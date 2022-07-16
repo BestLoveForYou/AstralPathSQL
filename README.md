@@ -43,12 +43,12 @@ You can change the config (such as the port) to change application's port .Warni
  - Better login verification
  ## 1.103.20220715
 - Several known bugs have been fixed. The biggest bugs are the execution of **update** and incomplete data
-
- ## v1.101.20220714
-Fixed known bugs, including the creation and use of data tables, SQL syntax, etc
- ## v1.102.20220714
+## v1.102.20220714
 - New functions are available! Users need to log in to connect. The default login account and password are **root:123456**, and the format needs to be
 Account Name: password.
+ ## v1.101.20220714
+Fixed known bugs, including the creation and use of data tables, SQL syntax, etc
+ 
  - **Epic update!!!**
   Change the syntax to SQL syntax! Compatible with some SQL languages Others are being manufacture!
   More support!!!
