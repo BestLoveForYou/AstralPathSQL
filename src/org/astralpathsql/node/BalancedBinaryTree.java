@@ -412,7 +412,20 @@ public class BalancedBinaryTree<T> {
             COREINFORMATION a = (COREINFORMATION) n.data;
             if (a.getTable().equals(table)) {
                 if (a.getINFO().contains(info)) {
-                    res.append(a.toString());
+                    res.append(a);
+                    res.append("§");
+                }
+            }
+        });
+        return res.toString();
+    }
+    public String forTa(String table,String info) {
+        StringBuilder res = new StringBuilder();
+        traverse(root, n -> {
+            COREINFORMATION a = (COREINFORMATION) n.data;
+            if (a.getTable().equals(table)) {
+                if (a.getINFO().contains(info)) {
+                    res.append(a.getINFO());
                     res.append("§");
                 }
             }

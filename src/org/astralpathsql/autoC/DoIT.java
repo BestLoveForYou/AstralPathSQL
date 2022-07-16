@@ -159,7 +159,7 @@ public class DoIT {
                         writeMessage = a;
                         if (sp[4].equals("where")) {
                             sp[5] = sp[5].replaceAll("=","'") + "'";
-                            a = tree.forT(sp[3],sp[5]);
+                            a = tree.forTa(sp[3],sp[5]);
                             writeMessage = a;
                         }
                     }
@@ -203,7 +203,6 @@ public class DoIT {
                     String work = sp[3];
                     String ca[] = work.split("=");
                     work = work.replaceAll("=","'") + "';";
-                    tree.deleteBy(sp[1],sp[5]);
                     String res[] = a.split("\\|");
                     int ind = res[2].lastIndexOf(ca[0]);
                     String handle = res[2].substring(0,ind);
@@ -214,6 +213,7 @@ public class DoIT {
                     System.out.println(handle);
                     COREINFORMATION c = add(handle);
                     System.out.println(c.toString());
+                    tree.deleteBy(sp[1],sp[5]);
                     tree.add(c);
                     writeMessage = "1";
                 }
@@ -355,6 +355,7 @@ public class DoIT {
                 writeMessage = "[INFO]Connected closed...";			// 结束消息
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         System.gc();
         return writeMessage;

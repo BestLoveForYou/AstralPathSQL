@@ -51,7 +51,8 @@ public class Filer {
             } else { 													// 文件不存在
                 file.createNewFile(); 					// 创建新的文件
                 String a = encode("root:123456:ADMIN§");
-                PrintWriter pu = new PrintWriter(new FileOutputStream(file));
+                PrintWriter pu = new PrintWriter(new FileOutputStream(file), Boolean.parseBoolean("utf-8"));
+
                 pu.print(a);
                 pu.close();
             }
@@ -140,7 +141,7 @@ public class Filer {
             channel.close();													// 关闭通道
             input.close();
             String a = decode(new String(bos.toByteArray()));
-            PrintWriter pu = new PrintWriter(new FileOutputStream(file));
+            PrintWriter pu = new PrintWriter(new FileOutputStream(file),Boolean.parseBoolean("utf-8"));
             pu.print(encode(a + c + "§"));
             pu.close();
             return false;
@@ -182,7 +183,7 @@ public class Filer {
             }
             b = encode(b);
             File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "user.txt");
-            PrintWriter pu = new PrintWriter(new FileOutputStream(file));
+            PrintWriter pu = new PrintWriter(new FileOutputStream(file), Boolean.parseBoolean("utf-8"));
             pu.print(b);
             pu.close();
             return "1";
@@ -203,7 +204,7 @@ public class Filer {
                 file.createNewFile(); 					// 创建新的文件
             }
 
-            PrintWriter pu = new PrintWriter(new FileOutputStream(file));
+            PrintWriter pu = new PrintWriter(new FileOutputStream(file), Boolean.parseBoolean("utf-8"));
             pu.print(a);
             pu.close();
             return 1;
