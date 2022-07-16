@@ -1,6 +1,8 @@
 # AstralPathSQL
    Creator BestLoveForYou  
+   
       website:[website](http://www.godserver.cn/)  
+      
       email:yaoboyulove@163.com  
 
 # Brief Introduction:
@@ -9,7 +11,7 @@
 - This data structure allows for efficient storage, insertion and deletion even with large amounts of data. 
 
 # Usage
-**Server**:Download /AstralPathSQL/out/artifacts/AstralPathSQLServer_jar/AstralPathSQL.jar
+**Server**:Download /AstralPathSQL/out/artifacts/AstralPathSQLServer_jar/AstralPathSQL.jar  
 launch it: java -jar AstralPathSQL.jar
 
 **Client**:Download /AstralPathSQL/out/artifacts/AstralPathSQL_jar/AstralPathSQL.jar
