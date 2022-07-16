@@ -12,19 +12,19 @@
 
 # Usage
 **Server**:   
-*function:*   
+**function:**   
 Including select, insert, update and delete are supported!   
 other function:   
-*User authentication*:    
+**User authentication**:    
 The format is username: password. User data can be added and deleted on the server or on the client that has passed user authentication
 Example: user add root:123456, the default user is root:123456
-*Underlying code*:    
+**Underlying code**:    
 getall - Get all data
 status - Get the number of connections, status, etc
-*Currently, functions are being developed:*   
+**Currently, functions are being developed:**   
 Cache function, user permissions, and better optimization
 
-**Client**:
+**Client**:   
 Enter IP and port number first, example: 127.0.0.1:9999
 Then authenticate to use
 
