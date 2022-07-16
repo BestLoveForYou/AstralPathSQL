@@ -5,7 +5,7 @@
       
    email:yaoboyulove@163.com  
    
-   2022-07-17 0:4 Beijing time
+   2022-07-17 1:20 Beijing time
 # Brief Introduction:
 - This is a database system, completely based on java!
 - The data structure used is a balanced binary tree.
@@ -36,6 +36,10 @@ You can change the config (such as the port) to change application's port .Warni
 # Update records
 
 # v1.100 series
+ ## 1.105.20220717
+ - Fixed update failure
+ - Better data processing, and better data compatibility
+ - Fixed some small bugs
  ## 1.104.20220716
  - Fixed several bugs
  - Bypass authentication bug when user logs in
