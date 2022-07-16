@@ -35,7 +35,12 @@ You can change the config (such as the port) to change application's port .Warni
 # Update records
 
 # v1.100 series
-
+ ## 1.104.20220716
+ - Fixed several bugs
+ - Bypass authentication bug when user logs in
+ - Failed Add when Data Add Incomplete
+ - Multiple ";" when updating data;
+ - Better login verification
  ## 1.103.20220715
 - Several known bugs have been fixed. The biggest bugs are the execution of **update** and incomplete data
 
