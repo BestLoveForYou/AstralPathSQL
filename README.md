@@ -36,6 +36,10 @@ You can change the config (such as the port) to change application's port .Warni
 # Update records
 
 # v1.100 series
+ ## 1.105.20220717
+ - Fixed update failure
+ - Better data processing, and better data compatibility
+ - Fixed some small bugs
  ## 1.104.20220716
  - Fixed several bugs
  - Bypass authentication bug when user logs in
