@@ -4,8 +4,9 @@
       email:yaoboyulove@163.com
 
 # Brief Introduction:
-  This is a database system, completely based on java!
-At present, balanced binary tree is used in data structure, and its unique data storage structure makes it still competent in the face of a large amount of data
+- This is a database system, completely based on java!
+- The data structure used is a balanced binary tree.
+- This data structure allows for efficient storage, insertion and deletion even with large amounts of data. 
 
 # Usage
 **Server**:Download /AstralPathSQL/out/artifacts/AstralPathSQLServer_jar/AstralPathSQL.jar
