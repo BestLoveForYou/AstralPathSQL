@@ -21,7 +21,7 @@ public class Filer {
             if (file.exists()) {											// 文件存在
 
             } else { 													// 文件不存在
-                System.out.println(file.createNewFile()); 					// 创建新的文件
+                file.createNewFile(); 					// 创建新的文件
             }
             file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "info.properties");			// 定义文件路径
             if (!file.getParentFile().exists()) { 							// 父路径不存在
@@ -30,7 +30,7 @@ public class Filer {
             if (file.exists()) {											// 文件存在
 
             } else { 													// 文件不存在
-                System.out.println(file.createNewFile()); 					// 创建新的文件
+                file.createNewFile(); 					// 创建新的文件
                 ProRead.write();
             }
             file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "table.txt");			// 定义文件路径
@@ -40,7 +40,7 @@ public class Filer {
             if (file.exists()) {											// 文件存在
 
             } else { 													// 文件不存在
-                System.out.println(file.createNewFile()); 					// 创建新的文件
+                file.createNewFile(); 					// 创建新的文件
             }
             file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "user.txt");			// 定义文件路径
             if (!file.getParentFile().exists()) { 							// 父路径不存在
@@ -49,8 +49,8 @@ public class Filer {
             if (file.exists()) {											// 文件存在
 
             } else { 													// 文件不存在
-                System.out.println(file.createNewFile()); 					// 创建新的文件
-                String a = encode("root:123456§");
+                file.createNewFile(); 					// 创建新的文件
+                String a = encode("root:123456:ADMIN§");
                 PrintWriter pu = new PrintWriter(new FileOutputStream(file));
                 pu.print(a);
                 pu.close();
@@ -68,7 +68,7 @@ public class Filer {
             if (file.exists()) {											// 文件存在
 
             } else { 													// 文件不存在
-                System.out.println(file.createNewFile()); 					// 创建新的文件
+                file.createNewFile();					// 创建新的文件
             }
 
             FileInputStream input = new FileInputStream(file);					// 文件输入流
@@ -99,7 +99,7 @@ public class Filer {
             if (file.exists()) {											// 文件存在
 
             } else { 													// 文件不存在
-                System.out.println(file.createNewFile()); 					// 创建新的文件
+                file.createNewFile(); 					// 创建新的文件
             }
 
             FileInputStream input = new FileInputStream(file);					// 文件输入流
@@ -121,29 +121,7 @@ public class Filer {
             return null;
         }
     }
-    public static boolean checkUser(String c) {
-        try {
-            File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "user.txt");			// 定义文件路径
 
-            FileInputStream input = new FileInputStream(file);					// 文件输入流
-            FileChannel channel = input.getChannel(); 							// 获取文件通道
-            ByteBuffer buffer = ByteBuffer.allocate(100); 						// 开辟缓冲大小
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(); 			// 内存输出流
-            int count = 0; 													// 保存读取个数
-            while ((count = channel.read(buffer)) != -1) {						// 缓冲区读取
-                buffer.flip(); 												// 重置缓冲区
-                while (buffer.hasRemaining()) { 								// 是否还有数据
-                    bos.write(buffer.get()); 									// 内容写入内存流
-                }
-                buffer.clear();												// 清空缓冲区
-            }
-            channel.close();													// 关闭通道
-            input.close();
-            return decode(new String(bos.toByteArray())).contains(c);
-        } catch (IOException e) {
-            return false;
-        }
-    }
     public static boolean addUser(String c) {
         try {
             File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "user.txt");			// 定义文件路径
@@ -222,7 +200,7 @@ public class Filer {
             if (file.exists()) {											// 文件存在
 
             } else { 													// 文件不存在
-                System.out.println(file.createNewFile()); 					// 创建新的文件
+                file.createNewFile(); 					// 创建新的文件
             }
 
             PrintWriter pu = new PrintWriter(new FileOutputStream(file));
@@ -242,7 +220,7 @@ public class Filer {
             if (file.exists()) {											// 文件存在
 
             } else { 													// 文件不存在
-                System.out.println(file.createNewFile()); 					// 创建新的文件
+                file.createNewFile(); 					// 创建新的文件
             }
             PrintWriter pu = new PrintWriter(new FileOutputStream(file,true));
             pu.println(ip);

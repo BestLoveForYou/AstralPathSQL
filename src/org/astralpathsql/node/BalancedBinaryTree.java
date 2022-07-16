@@ -16,12 +16,10 @@ public class BalancedBinaryTree<T> {
     public BalancedBinaryTree() {
 
     }
-
     @SuppressWarnings("rawtypes")
     public BalancedBinaryTree(Comparator comparator) {
         this.comparator = comparator;
     }
-
     public void add(T data) {
         Node node = new Node(data);
         Node p = findNode(node);

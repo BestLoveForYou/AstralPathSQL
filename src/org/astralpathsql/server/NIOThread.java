@@ -2,6 +2,7 @@ package org.astralpathsql.server;
 
 import org.astralpathsql.autoC.DoIT;
 import org.astralpathsql.autoC.Hash;
+import org.astralpathsql.been.User;
 import org.astralpathsql.file.Filer;
 
 import java.nio.ByteBuffer;
@@ -10,7 +11,6 @@ import java.nio.channels.SocketChannel;
 import static org.astralpathsql.server.MainServer.*;
 
 public class NIOThread implements Runnable {					// 客户端处理线程
-        private static final ThreadLocal<String> THREADLOCAL = new ThreadLocal<String>() ;
         private SocketChannel clientChannel; 								// 客户端通道
         private boolean flag = true; 										// 循环标记
         public NIOThread(SocketChannel clientChannel) throws Exception {
@@ -25,12 +25,14 @@ public class NIOThread implements Runnable {					// 客户端处理线程
                 int readCount1 = this.clientChannel.read(buffer); 		// 接收客户端发送数据
                 String readMessage1 = new String(buffer.array(),
                         0, readCount1).trim(); 						// 数据变为字符串
-                if (Filer.checkUser(readMessage1)) {
+                String ip = String.valueOf(clientChannel.getRemoteAddress());
+                String ju = User.checkUser(readMessage1);
+                if (!ju.equals("false")) {
                     buffer.clear(); 										// 清空缓冲区
                     buffer.put("Successful certification".getBytes()); 					// 缓冲区保存数据
                     buffer.flip(); 										// 重置缓冲区
                     this.clientChannel.write(buffer);						// 回应信息
-                    THREADLOCAL.set(readMessage1);
+                    String a = Filer.getUser();
                 } else {
                     buffer.clear(); 										// 清空缓冲区
                     buffer.put("Authentication failed".getBytes()); 					// 缓冲区保存数据
@@ -46,7 +48,7 @@ public class NIOThread implements Runnable {					// 客户端处理线程
                     int readCount = this.clientChannel.read(buffer); 		// 接收客户端发送数据
                     String readMessage = new String(buffer.array(),
                             0, readCount).trim(); 						// 数据变为字符串
-                    String writeMessage = DoIT.doit(readMessage);
+                    String writeMessage = DoIT.doit(readMessage,ju,ip);
                     if ("exit".equals(readMessage)) { 						// 结束指令
                         writeMessage = "[INFO]Connected closed...";			// 结束消息
                         this.flag = false; 								// 修改标记
@@ -60,7 +62,6 @@ public class NIOThread implements Runnable {					// 客户端处理线程
                 this.clientChannel.close(); 								// 关闭通道
             } catch (Exception e) {
                 now_Connect --;
-                e.printStackTrace();
             }
         }
 }

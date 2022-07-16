@@ -20,7 +20,7 @@ public class DoIT {
      * @param readMessage
      * @return
      */
-    public static String doit(String readMessage) {
+    public static String doit(String readMessage,String Jurisdiction,String ip) {
 
         String sp[] = readMessage.split(" ");
         String writeMessage = "无效指令!";
@@ -41,29 +41,58 @@ public class DoIT {
                     /**
                      * @Date 2022-07-14
                      * 添加功能完成!!!!!!和sql语句一模一样,但不能使用大写
+                     * @Date 2022-07-16  数据不全时更新失败bug已解决
+                     *
                      */
                     if (sp[3].equals("values")) {
                         String ch = sp[2];
                         //数据表
                         String res[] = ch.split("\\(");
-                        sp[4] = sp[4].replaceAll("\\(","");
-                        sp[4] = sp[4].replaceAll("\\)","");
-                        res[1] = res[1].replaceAll("\\)","");//去除(和)
+                        sp[4] = sp[4].replaceAll("\\(", "");
+                        sp[4] = sp[4].replaceAll("\\)", "");
+                        res[1] = res[1].replaceAll("\\)", "");//去除(和)
                         String tabler[] = res[1].split(",");//为输入中的数据格式
                         Table t = ta.get(res[0]);//获取表格中的数据格式
                         String res2[] = t.getTable().split(",");
                         COREINFORMATION c = new COREINFORMATION();
                         String value[] = sp[4].split(",");
                         String add = "";//这是要处理的数据,将要保存
-                        for (int x = 0 ;x < res2.length ; x ++) {
-                            String prof[] = res2[x].split(" ");
-                            if (prof[1].equals(tabler[x])) {//检验是否匹配 prof[0]为格式,prof[1[为数据名称
-                                add = add + prof[1] + value[x] + ";";
+                        String tab = "";
+                        int y = 0;
+                        int x;
+                        for (x = 0; x < res2.length; x++) {
+                            String prof[] = res2[y].split(" ");
+                            try {
+                                if (prof[1].equals(tabler[x])) {//检验是否匹配 prof[0]为格式,prof[1[为数据名称
+                                    add = add + prof[1] + value[x] + ";";
+                                    tab = tab + tabler[x] + ",";
+                                    if (y == res.length) {
+                                        break;
+                                    }
+                                } else {
+                                    y++;
+                                    x--;
+                                }
+                            } catch (Exception e) {
                             }
                         }
                         c.setId(tree.size());
                         c.setTable(res[0]);
-                        c.setINFO(add);
+                        String r[] = t.getTable().split(",");
+                        String tabe = "";
+                        for (int xa = 0; xa < r.length; xa++) {
+                            tabe = tabe + r[xa].split(" ")[1] + ",";
+                        }
+                        if (!tabe.equals(tab)) {
+                            String tabl[] = tabe.replaceAll(tab,"").split(",");
+                            String a = "";
+                            for (int xb = 0; xb < tabl.length; xb ++) {
+                                a = a + tabl[xb]  + "'null';";
+                            }
+                            c.setINFO(a + add);
+                        } else {
+                            c.setINFO(add);
+                        }
                         SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
                         c.setHiredate(new Date());
                         tree.add(c);
@@ -129,7 +158,9 @@ public class DoIT {
                         String a = tree.forT(sp[3]);
                         writeMessage = a;
                         if (sp[4].equals("where")) {
-
+                            sp[5] = sp[5].replaceAll("=","'") + "'";
+                            a = tree.forT(sp[1],sp[5]);
+                            writeMessage = a;
                         }
                     }
                 } else
@@ -178,8 +209,8 @@ public class DoIT {
                     String handle = res[2].substring(0,ind);
                     String end = res[2].substring(ind + work.length() + 2);
                     System.out.println(end);
-                    System.out.println(handle + work + end);
-                    handle = res[0] + "|" + res[1] + "|" + handle + work + end + "|table:" + table + "§";
+                    System.out.println(handle + work.replaceFirst(";","") + end);
+                    handle = res[0] + "|" + res[1] + "|" + handle + work.replaceFirst(";","") + end + "|table:" + table + "§";
                     System.out.println(handle);
                     COREINFORMATION c = add(handle);
                     System.out.println(c.toString());
@@ -191,9 +222,66 @@ public class DoIT {
                 以下是缓存功能
              */
             if (sp[0].equals("cache")) {
-                if (sp[1].equals("setTime")) {
-                    cache.setDelaySeconds(Long.parseLong(sp[2]));
-                    writeMessage = "1";
+                if (sp[1].equals("insert")) {
+                    if (sp[2].equals("into")) {
+                        /**
+                         * @Date 2022-07-14
+                         * 添加功能完成!!!!!!和sql语句一模一样,但不能使用大写
+                         * @Date 2022-07-16  数据不全时更新失败bug已解决
+                         *
+                         */
+                        if (sp[4].equals("values")) {
+                            String ch = sp[3];
+                            //数据表
+                            String res[] = ch.split("\\(");
+                            sp[5] = sp[5].replaceAll("\\(", "");
+                            sp[5] = sp[5].replaceAll("\\)", "");
+                            res[1] = res[1].replaceAll("\\)", "");//去除(和)
+                            String tabler[] = res[1].split(",");//为输入中的数据格式
+                            Table t = ta.get(res[0]);//获取表格中的数据格式
+                            String res2[] = t.getTable().split(",");
+                            COREINFORMATION c = new COREINFORMATION();
+                            String value[] = sp[5].split(",");
+                            String add = "";//这是要处理的数据,将要保存
+                            String tab = "";
+                            int y = 0;
+                            int x;
+                            for (x = 0; x < res2.length; x++) {
+                                String prof[] = res2[y].split(" ");
+                                try {
+                                    if (prof[1].equals(tabler[x])) {//检验是否匹配 prof[0]为格式,prof[1[为数据名称
+                                        add = add + prof[1] + value[x] + ";";
+                                        tab = tab + tabler[x] + ",";
+                                        if (y == res.length) {
+                                            break;
+                                        }
+                                    } else {
+                                        y++;
+                                        x--;
+                                    }
+                                } catch (Exception e) {
+                                }
+                            }
+                            c.setId(tree.size());
+                            c.setTable(res[0]);
+                            String r[] = t.getTable().split(",");
+                            String tabe = "";
+                            for (int xa = 0; xa < r.length; xa++) {
+                                tabe = tabe + r[xa].split(" ")[1] + ",";
+                            }
+                            String tabl[] = tabe.replaceAll(tab,"").split(",");
+                            String a = "";
+                            for (int xb = 0; xb < tabl.length; xb ++) {
+                                a = a + tabl[xb]  + "'null';";
+                            }
+                            c.setINFO(a + add);
+                            SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+                            c.setHiredate(new Date());
+                            tree.add(c);
+                            writeMessage = "1";
+                        }
+                    }
+
                 }
                 if (sp[1].equals("getTime")) {
                     writeMessage = String.valueOf(cache.getDelaySeconds(Long.parseLong(sp[2])));
@@ -228,30 +316,45 @@ public class DoIT {
                 }
             }
             if (sp[0].equals("status")) {
-                writeMessage = "版本:" + version + "\n历史连接数:" + all_Connect + "\n目前连接数:" + now_Connect;
+                writeMessage = "版本:" + version + "\n历史连接数:" + all_Connect + "\n目前连接数:" + now_Connect + "\n权限:" + Jurisdiction
+                        + "\n连接IP:" + ip ;
             }
             if (sp[0].equals("user")) {
                 if (sp[1].equals("add")) {
-                    if(sp[2].contains(":")) {
-                        Filer.addUser(sp[2]);
-                        writeMessage = "用户更新-时间:" + new Date();
+                    if(sp[2].contains("DBA")) {
+                        writeMessage = "DBA permission cannot be created!";
+                    } else if (Jurisdiction.equals("ADMIN")) {
+                        if(sp[2].contains(":")) {
+                            Filer.addUser(sp[2]);
+                            writeMessage = "用户更新-时间:" + new Date();
+                        } else {
+                            writeMessage = "null";
+                        }
                     } else {
-                        writeMessage = "null";
+                        writeMessage = "权限不足!";
                     }
                 }
                 if (sp[1].equals("remove")) {
-                    Filer.removeUser(sp[2]);
-                    writeMessage = "用户更新-时间:" + new Date();
+                    if (Jurisdiction.equals("admin")) {
+                        Filer.removeUser(sp[2]);
+                        writeMessage = "用户更新-时间:" + new Date();
+                    } else {
+                        writeMessage = "权限不足!";
+                    }
+
                 }
                 if (sp[1].equals("all")) {
-                    writeMessage = Filer.getUser();
+                    if (Jurisdiction.equals("ADMIN")) {
+                        writeMessage = Filer.getUser();
+                    } else {
+                        writeMessage = "权限不足!";
+                    }
                 }
             }
             if ("exit".equals(readMessage)) { 						// 结束指令
                 writeMessage = "[INFO]Connected closed...";			// 结束消息
             }
         } catch (Exception e) {
-
         }
         System.gc();
         return writeMessage;

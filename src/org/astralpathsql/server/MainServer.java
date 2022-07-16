@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 import static org.astralpathsql.print.ColorTest.getFormatLogString;
 
 public class MainServer {
-    public static String version = "1.103.20220715";
+    public static String version = "1.104.20220716";
     public static BalancedBinaryTree<COREINFORMATION> tree = new BalancedBinaryTree<COREINFORMATION>();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
@@ -81,7 +81,7 @@ public class MainServer {
                 System.out.println(getFormatLogString("服务端命令集启动成功!",32,1));
                 while (true) {
                     String msg = InputUtil.getString(">");	// 提示信息
-                    String out = DoIT.doit(msg);
+                    String out = DoIT.doit(msg,"DBA","0.0.0.0");
                     if (msg.equals("getall")) {
                         String res[] = out.split("§");
                         for (int x = 0;x < res.length ;x ++) {
