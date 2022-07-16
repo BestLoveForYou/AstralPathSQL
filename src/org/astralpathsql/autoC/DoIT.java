@@ -159,7 +159,7 @@ public class DoIT {
                         writeMessage = a;
                         if (sp[4].equals("where")) {
                             sp[5] = sp[5].replaceAll("=","'") + "'";
-                            a = tree.forT(sp[1],sp[5]);
+                            a = tree.forT(sp[3],sp[5]);
                             writeMessage = a;
                         }
                     }
