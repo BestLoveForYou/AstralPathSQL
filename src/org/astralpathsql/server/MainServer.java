@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 import static org.astralpathsql.print.ColorTest.getFormatLogString;
 
 public class MainServer {
-    public static String version = "1.105.20220717";
+    public static String version = "1.106.20220717";
     public static BalancedBinaryTree<COREINFORMATION> tree = new BalancedBinaryTree<COREINFORMATION>();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
@@ -35,21 +35,40 @@ public class MainServer {
     public static Map<String,Table> ta = new HashMap<>();
     public static boolean flag = true;
     public static int PORT = 9999;
+    public static String MaxMemory = "1024M";
+    public static String Memory = "0.00";
     /**
      * @author Saturn
      * AstralPathSQL System
      *
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+        Map<String,String> arg = new TreeMap<String,String>();
+        for (int x = 0; x < args.length; x ++) {
+            arg.put(args[x].split("=")[0],args[x].split("=")[1]);
+        }
         System.out.println(getFormatLogString("版本:" + version + "\n" + System.getProperty("os.name"),35,4));
         try {
+            MaxMemory = arg.get("server.maxmemory");//最大可以内存
+            if (MaxMemory.isEmpty()) {
+                throw new Exception("启动参数错误");
+            }
+        } catch (Exception e) {
+            System.err.println("最大内存获取错误!格式应为:\n" + "java -jar ***.jar server.maxmemory=???");
+            System.out.println(10);
+            System.exit(10);
+
+        }
+        try {
             long start = System.currentTimeMillis();
+
             System.out.println(getFormatLogString("初始化中",34,1));
             Filer.createInFirst();//对象保存文件
             Table.read();//生成表
             System.out.println(getFormatLogString("数据,数据表 加载完成",34,1));
             prop = ProRead.read();//加载配置文件
             PORT = Integer.parseInt(prop.getProperty("port"));
+            PORT = Integer.parseInt(arg.get("server.port"));
             System.out.println(getFormatLogString("平衡二叉树加载中",34,1));
             tree = Add.addin(tree);//二叉树加载
             System.out.println(getFormatLogString("成功!",32,1));
@@ -62,9 +81,28 @@ public class MainServer {
                 while (flag) {
                     try {
                         Thread.sleep(10000);
+                        Runtime run = Runtime.getRuntime();
+                        double total = run.totalMemory();
+                        double free = run.freeMemory();
+                        double used = (total - free)/(1024*1024);
+                        java.text.DecimalFormat df = new java.text.DecimalFormat("#.##");
+                        Memory = df.format(used);
                         Filer.writeSQL(tree);
                         ProRead.write();
                         Table.write();
+                        if (Integer.parseInt(MaxMemory) > Integer.parseInt(Memory)) {
+                            System.err.println("内存溢出!\n" + "严重错误[ERROR]\n" + "正在尝试gc清理...");
+                            System.gc();
+                            if (Integer.parseInt(MaxMemory) > Integer.parseInt(Memory)) {
+                                System.err.println("gc清理无法解决!\n" + "即将停止程序!");
+                                Filer.writeSQL(tree);
+                                ProRead.write();
+                                Table.write();
+                                Thread.sleep(1000);
+                                System.out.println(21);
+                                System.exit(21);
+                            }
+                        }
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     } catch (Exception e) {
@@ -113,9 +151,10 @@ public class MainServer {
 
             long end = System.currentTimeMillis();
             System.out.println(getFormatLogString("全部启动完成! 共耗时:" + (end - start) + "ms",32,1));
-            System.out.println(getFormatLogString("服务端启动程序成功，该程序在 " + PORT + " 端口上监听，等待客户端连接... ...",35,4));
+            System.out.println(getFormatLogString("服务端启动程序成功，该程序在 " + PORT + " 端口上监听\n最大可以内存为:" + MaxMemory,35,4));
             // 所有的连接处理都需要被Selector所管理，也就是说只要有新的用户连接，那么就通过Selector处理
             int keySelect = 0; 											// 接收连接状态
+
             while ((keySelect = selector.select()) > 0) { 					// 持续等待连接
                 selectedKeys = selector.selectedKeys();
                 selectionIter = selectedKeys.iterator();
