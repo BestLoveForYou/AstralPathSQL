@@ -36,6 +36,8 @@ You can change the config (such as the port) to change application's port .Warni
 # Update records
 
 # v1.100 series
+ ## 1.106.20220717
+ - Updated the new function of startup parameters!
  ## 1.105.20220717
  - Provides a more secure encryption and decryption format
  - Fixed update failure
