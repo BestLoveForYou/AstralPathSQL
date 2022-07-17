@@ -37,6 +37,7 @@ You can change the config (such as the port) to change application's port .Warni
 
 # v1.100 series
  ## 1.105.20220717
+ - Provides a more secure encryption and decryption format
  - Fixed update failure
  - Better data processing, and better data compatibility
  - Fixed some small bugs
