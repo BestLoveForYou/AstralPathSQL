@@ -11,6 +11,7 @@ public class Hash {
      * @return 加密后的数据
      */
     public static String encode(String str) {					// 加密处理
+        str = "D" + str;
         String temp = SALT + str ; 				// 盐值对外不公布
         byte data [] = temp.getBytes() ; 						// 将字符串变为字节数组
         for (int x = 0 ; x < REPEAT ; x ++) {
@@ -24,6 +25,7 @@ public class Hash {
      * @return 解密后的原始数据
      */
     public static String decode(String str) {
+        str = str.replaceFirst("D","");
         byte data [] = str.getBytes() ;						// 获取加密内容
         for (int x = 0 ; x < REPEAT ; x ++) {
             data = Base64.getDecoder().decode(data) ;			// 多次解密
