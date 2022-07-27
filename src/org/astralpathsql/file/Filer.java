@@ -1,6 +1,8 @@
 package org.astralpathsql.file;
 
 import org.astralpathsql.autoC.Hash;
+import org.astralpathsql.autoC.form.Table;
+import org.astralpathsql.been.COREINFORMATION;
 import org.astralpathsql.properties.ProRead;
 import org.astralpathsql.node.BalancedBinaryTree;
 
@@ -10,6 +12,8 @@ import java.nio.channels.FileChannel;
 
 import static org.astralpathsql.autoC.Hash.decode;
 import static org.astralpathsql.autoC.Hash.encode;
+import static org.astralpathsql.server.MainServer.*;
+import static org.astralpathsql.server.MainServer.ta;
 
 public class Filer {
     public static void createInFirst() {
@@ -191,9 +195,10 @@ public class Filer {
             return "0";
         }
     }
-    public static Integer writeSQL(BalancedBinaryTree tree) throws Exception{
+    public static Integer writeSQL() throws Exception{
         try {
             String a = tree.forW();
+
             File file = new File("." + File.separator + "apsql" + File.separator + "save.txt");
             if (!file.getParentFile().exists()) { 							// 父路径不存在
                 file.getParentFile().mkdirs(); 							// 创建父路径
@@ -206,9 +211,21 @@ public class Filer {
 
             PrintWriter pu = new PrintWriter(new FileOutputStream(file), Boolean.parseBoolean("utf-8"));
             pu.print(a);
+            for (int x =0; x < Mtree.size(); x ++) {
+                for(String key:ta.keySet()){
+                    try {
+                        if (!Mtree.get(key).forW().isEmpty()) {
+                            pu.print(Mtree.get(key).forW());
+                        }
+                    } catch (Exception exception) {
+
+                    }
+                }
+            }
             pu.close();
             return 1;
         } catch (Exception e) {
+            e.printStackTrace();
             return -1;
         }
     }

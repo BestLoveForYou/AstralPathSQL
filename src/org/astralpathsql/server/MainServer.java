@@ -2,6 +2,7 @@ package org.astralpathsql.server;
 
 import org.astralpathsql.autoC.DoIT;
 import org.astralpathsql.autoC.form.Table;
+import org.astralpathsql.autoC.form.TreeSearch;
 import org.astralpathsql.been.Cache;
 import org.astralpathsql.been.COREINFORMATION;
 import org.astralpathsql.client.InputUtil;
@@ -33,6 +34,7 @@ public class MainServer {
     public static Cache<Integer, COREINFORMATION> cache = new Cache<>();
     public static Properties prop = null;
     public static Map<String,Table> ta = new HashMap<>();
+    public static Map<String,BalancedBinaryTree<COREINFORMATION>> Mtree = new HashMap<>();
     public static boolean flag = true;
     public static int PORT = 9999;
     public static String MaxMemory = "1024M";
@@ -49,22 +51,12 @@ public class MainServer {
         }
         System.out.println(getFormatLogString("版本:" + version + "\n" + System.getProperty("os.name"),35,4));
         try {
-            MaxMemory = arg.get("server.maxmemory");//最大可以内存
-            if (MaxMemory.isEmpty()) {
-                throw new Exception("启动参数错误");
-            }
-        } catch (Exception e) {
-            System.err.println("最大内存获取错误!格式应为:\n" + "java -jar ***.jar server.maxmemory=???");
-            System.out.println(10);
-            System.exit(10);
-
-        }
-        try {
             long start = System.currentTimeMillis();
 
             System.out.println(getFormatLogString("初始化中",34,1));
             Filer.createInFirst();//对象保存文件
             Table.read();//生成表
+            TreeSearch.load();
             System.out.println(getFormatLogString("数据,数据表 加载完成",34,1));
             prop = ProRead.read();//加载配置文件
             PORT = Integer.parseInt(prop.getProperty("port"));
@@ -80,29 +72,10 @@ public class MainServer {
                 System.out.println(getFormatLogString("定时任务已启动成功!",32,1));
                 while (flag) {
                     try {
-                        Thread.sleep(10000);
-                        Runtime run = Runtime.getRuntime();
-                        double total = run.totalMemory();
-                        double free = run.freeMemory();
-                        double used = (total - free)/(1024*1024);
-                        java.text.DecimalFormat df = new java.text.DecimalFormat("#.##");
-                        Memory = df.format(used);
-                        Filer.writeSQL(tree);
+                        Thread.sleep(1000);
+                        Filer.writeSQL();
                         ProRead.write();
                         Table.write();
-                        if (Integer.parseInt(MaxMemory) > Integer.parseInt(Memory)) {
-                            System.err.println("内存溢出!\n" + "严重错误[ERROR]\n" + "正在尝试gc清理...");
-                            System.gc();
-                            if (Integer.parseInt(MaxMemory) > Integer.parseInt(Memory)) {
-                                System.err.println("gc清理无法解决!\n" + "即将停止程序!");
-                                Filer.writeSQL(tree);
-                                ProRead.write();
-                                Table.write();
-                                Thread.sleep(1000);
-                                System.out.println(21);
-                                System.exit(21);
-                            }
-                        }
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     } catch (Exception e) {
@@ -137,8 +110,9 @@ public class MainServer {
                     }
                 }
             });
+
             // 打开一个服务端的Socket的连接通道
-            getFormatLogString("打开服务端连接通道",34,1);
+            System.out.println(getFormatLogString("打开服务端连接通道",34,1));
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(false); 					// 设置非阻塞模式
 
@@ -175,7 +149,6 @@ public class MainServer {
             serverSocketChannel.close();									// 关闭服务端通道
 
         } catch (Exception e) {
-
         }
 
     }

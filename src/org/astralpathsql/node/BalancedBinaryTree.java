@@ -419,6 +419,17 @@ public class BalancedBinaryTree<T> {
         });
         return res.toString();
     }
+    public String forI(String info) {
+        StringBuilder res = new StringBuilder();
+        traverse(root, n -> {
+            COREINFORMATION a = (COREINFORMATION) n.data;
+                if (a.getINFO().contains(info)) {
+                    res.append(a);
+                    res.append("§");
+                }
+        });
+        return res.toString();
+    }
     public String forTa(String table,String info) {
         StringBuilder res = new StringBuilder();
         traverse(root, n -> {

@@ -12,9 +12,16 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 public class Table {
-
-
     public String name;
+    public String prop;
+
+    public String getProp() {
+        return prop;
+    }
+
+    public void setProp(String prop) {
+        this.prop = prop;
+    }
 
     public String getName() {
         return name;
@@ -30,6 +37,7 @@ public class Table {
         return table;
     }
 
+
     public void setTable(String table) {
         this.table = table;
     }
@@ -39,7 +47,7 @@ public class Table {
         String n = "";
         n = new String(bos.toByteArray());
         if (n.isEmpty()) {
-            n = "name:Test|table:char 请勿在无其他表时删除§";
+            n = "name:Test|table:char 请勿在无其他表时删除|prop:null§";
         }
         String res[] = n.split("§");
 
@@ -81,6 +89,6 @@ public class Table {
     }
     @Override
     public String toString(){
-        return "name:" + this.name + "|table:" + this.table;
+        return "name:" + this.name + "|table:" + this.table + "|prop:" + this.prop;
     }
 }

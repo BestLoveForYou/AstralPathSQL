@@ -32,9 +32,24 @@ public class DoIT {
                 } else {
                     writeMessage = a;
                 }
+                try {
+                    if (!sp[1].isEmpty()) {
+                        writeMessage = Mtree.get(sp[1]).forW();
+                    }
+                } catch (Exception e) {
+                }
+            }
+            if (sp[0].equals("set")) {
+                if (sp[1].equals("table")) {
+                    String prop = sp[3];
+                    Table t = ta.get(sp[2]);//Get table name
+                    t.setProp(prop);
+                    System.out.println("请重新启动！");
+                    System.exit(0);
+                }
             }
             if (sp[0].equals("save")) {
-                writeMessage = String.valueOf(Filer.writeSQL(tree));
+                writeMessage = String.valueOf(Filer.writeSQL());
             }
             if (sp[0].equals("insert")) {
                 if (sp[1].equals("into")) {
@@ -76,7 +91,8 @@ public class DoIT {
                             } catch (Exception e) {
                             }
                         }
-                        c.setId(tree.size());
+
+
                         c.setTable(res[0]);
                         String r[] = t.getTable().split(",");
                         String tabe = "";
@@ -95,7 +111,21 @@ public class DoIT {
                         }
                         SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
                         c.setHiredate(new Date());
-                        tree.add(c);
+                        if (Mtree.containsKey(t.getName())) {
+                            String a = c.getINFO();
+                            String id = a.substring(a.indexOf("id"));
+                            id = id.replaceFirst("id`","");
+                            id = id.substring(0,id.indexOf("`"));
+                            c.setId(Integer.valueOf(id));
+                        } else {
+                            c.setId(tree.size());
+                        }
+                        if (Mtree.containsKey(t.getName())) {
+                            Mtree.get(t.getName()).add(c);
+                        } else {
+                            tree.add(c);
+                        }
+
                         writeMessage = "1";
                     }
                 }
@@ -153,25 +183,71 @@ public class DoIT {
              */
             if (sp[0].equals("select")) {
                 String sl = sp[1];
-                if (sl.equals("*")) {
-                    if (sp[2].equals("from")) {
-                        String a = tree.forT(sp[3]);
-                        writeMessage = a;
-                        if (sp[4].equals("where")) {
-                            sp[5] = sp[5].replaceAll("=","'") + "'";
-                            a = tree.forTa(sp[3],sp[5]);
+                if (Mtree.containsKey(sp[3])) {
+                    if (sl.equals("*")) {
+                        try {
+                            if (sp[2].equals("from")) {
+                                if (sp[4].equals("where")) {
+                                    if (sp[5].contains("id=")) {
+                                        String value = "id:" +sp[5].split("=")[1] + "|hiredate:2022-07-27|INFO:null|table:null§";
+                                        COREINFORMATION c = ClassInstanceFactory.create(COREINFORMATION.class, value) ;	// 工具类自动设置
+                                        COREINFORMATION resu = (COREINFORMATION) Mtree.get(sp[3]).getId(c);
+                                        writeMessage = resu.toString();
+                                        return writeMessage;
+                                    } else if (sp[5].contains("=")){
+                                        sp[5] = sp[5].replaceAll("=","`") + "`";
+                                        String a = Mtree.get(sp[3]).forI(sp[5]);
+                                        writeMessage = a;
+                                        return writeMessage;
+                                    }
+                                }
+
+                            } else {
+                                return Mtree.get(sp[3]).forW();
+                            }
+                        } catch (Exception e) {
+                            String a = Mtree.get(sp[3]).forW();
                             writeMessage = a;
+                            return a;
                         }
                     }
-                } else
-                if (sl.equals("counts")) {
-                    if (sp[2].equals("from")) {
-                        writeMessage = String.valueOf(tree.num(sp[3]));
+
+                    if (sl.equals("counts")) {
+                        if (sp[2].equals("from")) {
+                            writeMessage = String.valueOf(Mtree.get(sp[3]).size());
+                            return writeMessage;
+                        }
+                    } else if(!sl.equals("*")){
+                        writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3]);
+                        writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                        return writeMessage;
                     }
                 } else {
-                    writeMessage = tree.select(sp[1],sp[3]);
-                    writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                    if (sl.equals("*")) {
+                        if (sp[2].equals("from")) {
+                            if (sp[4].equals("where")) {
+                                sp[5] = sp[5].replaceAll("=","`") + "`";
+                                String a = tree.forTa(sp[3],sp[5]);
+                                writeMessage = a;
+                                return  writeMessage;
+                            }
+
+                        }
+                    } else
+                    if (sl.equals("counts")) {
+                        if (sp[2].equals("from")) {
+                            writeMessage = String.valueOf(tree.num(sp[3]));
+                            return writeMessage;
+                        }
+                    } else if(!sp.equals("*")){
+                        writeMessage = tree.select(sp[1],sp[3]);
+                        writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                        return writeMessage;
+                    }
+                    String a = tree.forT(sp[3]);
+                    writeMessage = a;
                 }
+
             }
             /**
              * @Date 2022-07-14
@@ -186,7 +262,12 @@ public class DoIT {
                         sp[4] = sp[4].replaceAll("=","'");
                         sp[4] = sp[4] + "'";
                     }
-                    tree.deleteBy(table,sp[4]);
+                    if (Mtree.containsKey(table)) {
+                        Mtree.get(table).deleteBy(table,sp[4]);
+                    } else {
+                        tree.deleteBy(table,sp[4]);
+                    }
+
                     writeMessage = "1";
                 }
             }
@@ -197,8 +278,12 @@ public class DoIT {
             if (sp[0].equals("update")) {
                 if (sp[2].equals("set")) {
                     sp[5] = sp[5].replaceAll("=","'") + "'";
-                    String a = tree.forT(sp[1],sp[5]);
-                    System.out.println(a);
+                    String a;
+                    if (Mtree.containsKey(sp[1])) {
+                        a = tree.forT(sp[1],sp[5]);
+                    } else {
+                        a = Mtree.get(sp[1]).forT(sp[1],sp[5]);
+                    }
                     String table = sp[1];
                     String work = sp[3];
                     String ca[] = work.split("=");
@@ -207,14 +292,17 @@ public class DoIT {
                     int ind = res[2].lastIndexOf(ca[0]);
                     String handle = res[2].substring(0,ind);
                     String end = res[2].substring(ind + work.length() + 2);
-                    System.out.println(end);
-                    System.out.println(handle + work.replaceFirst(";","") + end);
                     handle = res[0] + "|" + res[1] + "|" + handle + work.replaceFirst(";","") + end + "|table:" + table + "§";
                     System.out.println(handle);
                     COREINFORMATION c = add(handle);
-                    System.out.println(c.toString());
-                    tree.deleteBy(sp[1],sp[5]);
-                    tree.add(c);
+                    if (Mtree.containsKey(table)) {
+                        Mtree.get(table).deleteBy(table,sp[5]);
+                        Mtree.get(table).add(c);
+                    } else {
+                        tree.deleteBy(sp[1],sp[5]);
+                        tree.add(c);
+                    }
+
                     writeMessage = "1";
                 }
             }
@@ -224,12 +312,7 @@ public class DoIT {
             if (sp[0].equals("cache")) {
                 if (sp[1].equals("insert")) {
                     if (sp[2].equals("into")) {
-                        /**
-                         * @Date 2022-07-14
-                         * 添加功能完成!!!!!!和sql语句一模一样,但不能使用大写
-                         * @Date 2022-07-16  数据不全时更新失败bug已解决
-                         *
-                         */
+
                         if (sp[4].equals("values")) {
                             String ch = sp[3];
                             //数据表

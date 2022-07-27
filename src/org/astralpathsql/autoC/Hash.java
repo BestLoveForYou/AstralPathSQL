@@ -11,13 +11,12 @@ public class Hash {
      * @return 加密后的数据
      */
     public static String encode(String str) {					// 加密处理
-        str = "D" + str;
         String temp = SALT + str ; 				// 盐值对外不公布
         byte data [] = temp.getBytes() ; 						// 将字符串变为字节数组
         for (int x = 0 ; x < REPEAT ; x ++) {
             data = Base64.getEncoder().encode(data) ; 			// 重复加密
         }
-        return new String(data) ;								// 返回加密后的内容
+        return "D" + new String(data) ;								// 返回加密后的内容
     }
     /**
      * 进行解密处理

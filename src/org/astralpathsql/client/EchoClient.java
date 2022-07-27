@@ -49,7 +49,7 @@ public class EchoClient {
                 readCount = clientChannel.read(buffer);                // 读取服务端回应
                 buffer.flip();                                            // 重置缓冲区
                 a = new String(buffer.array(), 0, readCount);
-                if (msg.equals("getall")) {
+                if (msg.contains("getall")) {
                     String res[] = a.split("§");
                     for (int x = 0; x < res.length; x++) {
                         System.out.println(res[x]);
