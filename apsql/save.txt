@@ -1,1 +1,1 @@
-id:1|hiredate:2022-07-16|INFO:id'1';username'付一欧';password'123';|table:cc§id:0|hiredate:2022-07-15|INFO:null|table:null§id:2|hiredate:2022-07-16|INFO:id'2';username'姚博宇';password'123';|table:cc§id:3|hiredate:2022-07-17|INFO:id'3';username'yaoboyu';password'abcdef';|table:cc§
+id:0|hiredate:2022-07-28|INFO:null|table:Test§id:1|hiredate:2022-07-28|INFO:username'姚博宇';password'abcdef20060113';prop'1';|table:user§id:2|hiredate:2022-07-28|INFO:password'null';prop'null';id'2';username'付一欧';|table:user§

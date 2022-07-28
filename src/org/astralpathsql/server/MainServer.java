@@ -22,8 +22,11 @@ import java.util.concurrent.Executors;
 
 import static org.astralpathsql.print.ColorTest.getFormatLogString;
 
+/**
+ *
+ */
 public class MainServer {
-    public static String version = "1.110.20220727";
+    public static String version = "1.111.20220728";
     public static BalancedBinaryTree<COREINFORMATION> tree = new BalancedBinaryTree<COREINFORMATION>();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
@@ -93,7 +96,7 @@ public class MainServer {
                 while (true) {
                     String msg = InputUtil.getString(">");	// 提示信息
                     String out = DoIT.doit(msg,"DBA","0.0.0.0");
-                    if (msg.equals("getall")) {
+                    if (out.contains("§")) {
                         String res[] = out.split("§");
                         for (int x = 0;x < res.length ;x ++) {
                             System.out.println(res[x]);
@@ -125,7 +128,7 @@ public class MainServer {
 
             long end = System.currentTimeMillis();
             System.out.println(getFormatLogString("全部启动完成! 共耗时:" + (end - start) + "ms",32,1));
-            System.out.println(getFormatLogString("服务端启动程序成功，该程序在 " + PORT + " 端口上监听\n最大可以内存为:" + MaxMemory,35,4));
+            System.out.println(getFormatLogString("服务端启动程序成功，该程序在 " + PORT + " 端口上监听\n最大可用内存为:" + MaxMemory,35,4));
             // 所有的连接处理都需要被Selector所管理，也就是说只要有新的用户连接，那么就通过Selector处理
             int keySelect = 0; 											// 接收连接状态
 
@@ -148,7 +151,10 @@ public class MainServer {
             executorService.shutdown();									// 关闭线程池
             serverSocketChannel.close();									// 关闭服务端通道
 
+        } catch (NumberFormatException e) {
+            System.out.println("启动参数缺失！");
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

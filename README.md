@@ -1,4 +1,6 @@
 # AstralPathSQL
+   Because of my study ，this project has been stopped.
+   Maybe return in 2 year
    Creator BestLoveForYou  
    
    website:[website](http://www.godserver.cn/)  
@@ -36,11 +38,6 @@ You can change the config (such as the port) to change application's port .Warni
 # Update records
 
 # v1.100 series
- ## 1.110.20220727
- - Optimize your search engine
- - Fixed the failure of binary tree search, the default form search does not use binary tree, only when the form attribute is set to "1", can use binary tree engine
- - Fixed an issue with incorrect encryption
- - Greatly accelerated binary tree engine speed, speed up at least ten times
  ## 1.106.20220717
  - Updated the new function of startup parameters!
  ## 1.105.20220717

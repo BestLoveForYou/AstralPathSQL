@@ -43,9 +43,14 @@ public class DoIT {
                 if (sp[1].equals("table")) {
                     String prop = sp[3];
                     Table t = ta.get(sp[2]);//Get table name
-                    t.setProp(prop);
-                    System.out.println("请重新启动！");
-                    System.exit(0);
+                    if (t.getTable().contains("int id")) {
+                        if (prop.equals("1")) {
+                            t.setProp(prop);
+                            System.out.println("请重新启动！");
+                            writeMessage = "命令已执行！重新启动后生效";
+                        }
+                    }
+
                 }
             }
             if (sp[0].equals("save")) {
@@ -114,8 +119,8 @@ public class DoIT {
                         if (Mtree.containsKey(t.getName())) {
                             String a = c.getINFO();
                             String id = a.substring(a.indexOf("id"));
-                            id = id.replaceFirst("id`","");
-                            id = id.substring(0,id.indexOf("`"));
+                            id = id.replaceFirst("id'","");
+                            id = id.substring(0,id.indexOf("'"));
                             c.setId(Integer.valueOf(id));
                         } else {
                             c.setId(tree.size());
@@ -137,7 +142,20 @@ public class DoIT {
              */
             if (sp[0].equals("desc")) {
                 try {
-                    writeMessage = String.valueOf(ta.get(sp[1]));
+                    Table t  = ta.get(sp[1]);
+                    writeMessage = "-" + t.getName();
+                    for (int x = 0 ; x < t.getName().length(); x ++) {
+                        writeMessage = writeMessage + "-";
+                    }
+                    writeMessage = writeMessage + "§";
+                    String a[] = t.getTable().split(",");
+                    for (int x = 0 ; x < a.length; x ++) {
+                        writeMessage = writeMessage + a[x] + "§";
+                    }
+                    for (int x = 0 ; x < t.getName().length(); x ++) {
+                        writeMessage = writeMessage + "-";
+                    }
+                    writeMessage = writeMessage + "§prop:" + t.getProp();
                 } catch (Exception e) {
                     writeMessage = ta.toString();
                 }
@@ -166,7 +184,12 @@ public class DoIT {
                     }
                     t.setTable(b);
                     MainServer.ta.put(t.getName().replaceAll("name:",""),t);
-                    writeMessage = "1";
+                    if (readMessage.contains("id int")) {
+                        writeMessage = "1§注意:此表可以使用二叉树引擎,使用set table " + t.getName() + " 1 将表的引擎改为二叉树引擎！";
+                    } else {
+                        writeMessage = "1";
+                    }
+
                 }
             }
             /**
@@ -195,7 +218,7 @@ public class DoIT {
                                         writeMessage = resu.toString();
                                         return writeMessage;
                                     } else if (sp[5].contains("=")){
-                                        sp[5] = sp[5].replaceAll("=","`") + "`";
+                                        sp[5] = sp[5].replaceAll("=","'") + "'";
                                         String a = Mtree.get(sp[3]).forI(sp[5]);
                                         writeMessage = a;
                                         return writeMessage;
@@ -225,13 +248,16 @@ public class DoIT {
                 } else {
                     if (sl.equals("*")) {
                         if (sp[2].equals("from")) {
-                            if (sp[4].equals("where")) {
-                                sp[5] = sp[5].replaceAll("=","`") + "`";
-                                String a = tree.forTa(sp[3],sp[5]);
-                                writeMessage = a;
-                                return  writeMessage;
-                            }
+                            try {
+                                if (sp[4].equals("where")) {
+                                    sp[5] = sp[5].replaceAll("=","`") + "`";
+                                    String a = tree.forTa(sp[3],sp[5]);
+                                    writeMessage = a;
+                                    return  writeMessage;
+                                }
+                            } catch (Exception e) {
 
+                            }
                         }
                     } else
                     if (sl.equals("counts")) {
@@ -278,8 +304,10 @@ public class DoIT {
             if (sp[0].equals("update")) {
                 if (sp[2].equals("set")) {
                     sp[5] = sp[5].replaceAll("=","'") + "'";
+                    sp[5] = sp[5].replaceAll("\"","");
+                    sp[3] = sp[3].replaceAll("\"","");
                     String a;
-                    if (Mtree.containsKey(sp[1])) {
+                    if (!Mtree.containsKey(sp[1])) {
                         a = tree.forT(sp[1],sp[5]);
                     } else {
                         a = Mtree.get(sp[1]).forT(sp[1],sp[5]);
@@ -296,8 +324,8 @@ public class DoIT {
                     System.out.println(handle);
                     COREINFORMATION c = add(handle);
                     if (Mtree.containsKey(table)) {
-                        Mtree.get(table).deleteBy(table,sp[5]);
-                        Mtree.get(table).add(c);
+                        Mtree.get(sp[1]).deleteBy(sp[1],sp[5]);
+                        Mtree.get(sp[1]).add(c);
                     } else {
                         tree.deleteBy(sp[1],sp[5]);
                         tree.add(c);
@@ -406,7 +434,7 @@ public class DoIT {
                 if (sp[1].equals("add")) {
                     if(sp[2].contains("DBA")) {
                         writeMessage = "DBA permission cannot be created!";
-                    } else if (Jurisdiction.equals("ADMIN")) {
+                    } else if (Jurisdiction.equals("ADMIN")|Jurisdiction.equals("DBA")) {
                         if(sp[2].contains(":")) {
                             Filer.addUser(sp[2]);
                             writeMessage = "用户更新-时间:" + new Date();
@@ -418,7 +446,7 @@ public class DoIT {
                     }
                 }
                 if (sp[1].equals("remove")) {
-                    if (Jurisdiction.equals("admin")) {
+                    if (Jurisdiction.equals("ADMIN")|Jurisdiction.equals("DBA")) {
                         Filer.removeUser(sp[2]);
                         writeMessage = "用户更新-时间:" + new Date();
                     } else {
@@ -427,7 +455,7 @@ public class DoIT {
 
                 }
                 if (sp[1].equals("all")) {
-                    if (Jurisdiction.equals("ADMIN")) {
+                    if (Jurisdiction.equals("ADMIN")|Jurisdiction.equals("DBA")) {
                         writeMessage = Filer.getUser();
                     } else {
                         writeMessage = "权限不足!";

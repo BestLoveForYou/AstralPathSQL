@@ -49,23 +49,12 @@ public class EchoClient {
                 readCount = clientChannel.read(buffer);                // 读取服务端回应
                 buffer.flip();                                            // 重置缓冲区
                 a = new String(buffer.array(), 0, readCount);
-                if (msg.contains("getall")) {
+                if (a.contains("§")) {
+                    System.out.println(1);
                     String res[] = a.split("§");
                     for (int x = 0; x < res.length; x++) {
                         System.out.println(res[x]);
                     }
-                } else if (msg.contains("select ")) {//若是搜索,数据表
-                    String res[] = a.split("§");
-                    for (int x = 0; x < res.length; x++) {
-                        System.out.println(res[x]);
-                    }
-
-                } else if (msg.contains("user all")) {//若是搜索,数据表
-                    String res[] = a.split("§");
-                    for (int x = 0; x < res.length; x++) {
-                        System.out.println(res[x]);
-                    }
-
                 } else {
                     System.out.println(a);
                 }

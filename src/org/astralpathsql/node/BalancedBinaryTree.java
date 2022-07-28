@@ -7,6 +7,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static org.astralpathsql.server.MainServer.Mtree;
+
 public class BalancedBinaryTree<T> {
     private int size;
     private Node root;
@@ -411,6 +413,7 @@ public class BalancedBinaryTree<T> {
         traverse(root, n -> {
             COREINFORMATION a = (COREINFORMATION) n.data;
             if (a.getTable().equals(table)) {
+
                 if (a.getINFO().contains(info)) {
                     res.append(a);
                     res.append("§");
@@ -454,7 +457,12 @@ public class BalancedBinaryTree<T> {
             }
         });
         for (int i = 0; i < res.size(); i++) {
-            MainServer.tree.remove(new COREINFORMATION(res.get(i)));
+            if (Mtree.containsKey(table)) {
+                Mtree.get(table).remove(new COREINFORMATION(res.get(i)));
+            } else {
+                MainServer.tree.remove(new COREINFORMATION(res.get(i)));
+            }
+
         }
     }
     public String select(String v,String t) {

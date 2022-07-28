@@ -181,9 +181,10 @@ public class Filer {
     public static String removeUser(String a) {
         try {
             String b = getUser();
+            System.out.println(b);
             b = b.replaceAll(a + "§","");
             if (b.isEmpty()) {
-                b = "root:123456§";
+                b = "root:123456:ADMIN§";
             }
             b = encode(b);
             File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "user.txt");
