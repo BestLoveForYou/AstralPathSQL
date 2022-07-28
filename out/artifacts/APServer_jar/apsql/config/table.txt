@@ -1,1 +1,0 @@
-name:Test|table:char 请勿在无其他表时删除§
