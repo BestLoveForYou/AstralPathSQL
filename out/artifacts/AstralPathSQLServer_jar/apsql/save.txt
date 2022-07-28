@@ -1,0 +1,1 @@
+id:0|hiredate:2022-07-28|INFO:null|table:Test°Ïid:2|hiredate:2022-07-28|INFO:prop'null';id'2';username'∏∂“ª≈∑';password'123456';|table:user°Ïid:1|hiredate:2022-07-28|INFO:prop'null';id'1';username'“¶≤©”Ó';password'123456';|table:user°Ï
