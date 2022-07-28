@@ -2,11 +2,12 @@
    Because of my study ，this project has been stopped.
    Maybe return in 2 year
    Creator BestLoveForYou  
-   
+
    website:[website](http://www.godserver.cn/)  
       
    email:yaoboyulove@163.com  
    
+   If you are interested in this project, please give me a star!
    2022-07-17 0:4 Beijing time
 # Brief Introduction:
 - This is a database system, completely based on java!
@@ -14,9 +15,12 @@
 - This data structure allows for efficient storage, insertion and deletion even with large amounts of data. 
 
 # Usage
+**Please do not use uppercase instructions!**
+
 **Server**:   
 **function:**   
-Including select, insert, update and delete are supported!   
+Including select, insert, update and delete are supported!  
+
 other function:   
 **User authentication**:    
 The format is username: password. User data can be added and deleted on the server or on the client that has passed user authentication
@@ -38,6 +42,16 @@ You can change the config (such as the port) to change application's port .Warni
 # Update records
 
 # v1.100 series
+ ## 1.111.20220728
+ - Fixed the problem of data update and deletion
+ - Optimized creation of tables
+ - Optimized binary tree engine
+ 
+ ## 1.110.20220727
+ - Optimize your search engine
+ - Fixed the failure of binary tree search, the default form search does not use binary tree, only when the form attribute is set to "1", can use binary tree engine
+ - Fixed an issue with incorrect encryption
+ - Greatly accelerated binary tree engine speed, speed up at least ten times
  ## 1.106.20220717
  - Updated the new function of startup parameters!
  ## 1.105.20220717
