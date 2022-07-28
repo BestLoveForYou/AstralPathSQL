@@ -40,8 +40,7 @@ The config of it (info.properties) include port , all_connect , and change_time
 You can change the config (such as the port) to change application's port .Warning: you need to close the program before changing the configuration file, otherwise it will be overwritten
 
 # Update records
-
-# v1.100 series
+# v1.110 series 
  ## 1.111.20220728
  - Fixed the problem of data update and deletion
  - Optimized creation of tables
@@ -52,6 +51,8 @@ You can change the config (such as the port) to change application's port .Warni
  - Fixed the failure of binary tree search, the default form search does not use binary tree, only when the form attribute is set to "1", can use binary tree engine
  - Fixed an issue with incorrect encryption
  - Greatly accelerated binary tree engine speed, speed up at least ten times
+# v1.100 series
+ 
  ## 1.106.20220717
  - Updated the new function of startup parameters!
  ## 1.105.20220717
