@@ -41,6 +41,8 @@ You can change the config (such as the port) to change application's port .Warni
 
 # Update records
 # v1.110 series 
+ In this series, there have been a large range of changes, and other items except for the table class can still be supported downwards.
+This version has a high probability of bugs (because the engine has changed)
  ## 1.111.20220728
  - Fixed the problem of data update and deletion
  - Optimized creation of tables
