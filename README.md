@@ -1,6 +1,4 @@
 # AstralPathSQL
-   Because of my study ，this project has been stopped.
-   Maybe return in 2 year
    Creator BestLoveForYou  
 
    website:[website](http://www.godserver.cn/)  
