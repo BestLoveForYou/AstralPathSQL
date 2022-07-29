@@ -1,0 +1,1 @@
+name:Test|table:char 请勿在无其他表时删除|prop:null§name:user|table:int id,char username,char password,varchar prop|prop:1§

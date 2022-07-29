@@ -1,0 +1,1 @@
+java -jar AstralPathSQL.jar server.port=3306
