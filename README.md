@@ -43,7 +43,7 @@ You can change the config (such as the port) to change application's port .Warni
 This version has a high probability of bugs (because the engine has changed)
  ## 1.112.20220729
  - Support remote shutdown / restart of database
- - 
+ - Blocking, blocking IP and other new functions
  ## 1.111.20220728
  - Fixed the problem of data update and deletion
  - Optimized creation of tables
