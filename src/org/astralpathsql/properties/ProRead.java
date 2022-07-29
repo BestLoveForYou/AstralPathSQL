@@ -16,7 +16,7 @@ public class ProRead {
             prop.setProperty("port", String.valueOf(PORT));
 
             prop.store(new FileOutputStream(
-                    new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "info.properties")),
+                    new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "info.properties"), Boolean.parseBoolean("utf-8")),
                     "Properties For SQL");
         } catch (Exception e) {
 
@@ -25,8 +25,7 @@ public class ProRead {
     public static Properties read() throws IOException {
         try {
             Properties prop = new Properties();
-            prop.load(new FileInputStream(
-                    new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "info.properties")));
+            prop.load(new FileInputStream(new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "info.properties")));
             return prop;
         } catch (IOException e) {
             crNew();
@@ -44,7 +43,7 @@ public class ProRead {
             prop.setProperty("port", String.valueOf(PORT));
 
             prop.store(new FileOutputStream(
-                            new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "info.properties")),
+                            new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "info.properties"), Boolean.parseBoolean("utf-8")),
                     "Properties For SQL");
         }catch (Exception e) {
 

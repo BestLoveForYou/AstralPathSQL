@@ -3,14 +3,20 @@ package org.astralpathsql.autoC;
 import org.astralpathsql.autoC.form.Table;
 import org.astralpathsql.been.COREINFORMATION;
 import org.astralpathsql.file.Filer;
+import org.astralpathsql.properties.ProRead;
 import org.astralpathsql.server.MainServer;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.astralpathsql.file.Add.add;
+import static org.astralpathsql.file.Filer.BanIPFile;
 import static org.astralpathsql.server.MainServer.*;
 import static org.astralpathsql.server.MainServer.now_Connect;
 
@@ -25,33 +31,27 @@ public class DoIT {
         String sp[] = readMessage.split(" ");
         String writeMessage = "无效指令!";
         try {
-            if (sp[0].equals("getall")) {
-                String a = tree.forW();
-                if (a.isEmpty()) {
-
-                } else {
-                    writeMessage = a;
-                }
-                try {
-                    if (!sp[1].isEmpty()) {
-                        writeMessage = Mtree.get(sp[1]).forW();
-                    }
-                } catch (Exception e) {
-                }
-            }
             if (sp[0].equals("set")) {
                 if (sp[1].equals("table")) {
                     String prop = sp[3];
                     Table t = ta.get(sp[2]);//Get table name
-                    if (t.getTable().contains("int id")) {
-                        if (prop.equals("1")) {
+                    if (prop.equals("1")) {
+                        if (t.getTable().contains("int id")) {
                             t.setProp(prop);
                             System.out.println("请重新启动！");
                             writeMessage = "命令已执行！重新启动后生效";
                         }
+                    } else {
+                        t.setProp(prop);
+                        System.out.println("请重新启动！");
+                        writeMessage = "命令已执行！重新启动后生效";
                     }
 
                 }
+            }
+            if (sp[0].equals("banip")) {
+                BanIPFile(sp[1]);
+                writeMessage = "已完成！封禁IP:" + sp[1];
             }
             if (sp[0].equals("save")) {
                 writeMessage = String.valueOf(Filer.writeSQL());
@@ -465,10 +465,52 @@ public class DoIT {
             if ("exit".equals(readMessage)) { 						// 结束指令
                 writeMessage = "[INFO]Connected closed...";			// 结束消息
             }
+            if ("stop".equals(readMessage)) { 						// 结束指令
+                if (Jurisdiction.equals("ADMIN")) {
+                    writeMessage = "[INFO]Connected closed...";			// 结束消息
+                    System.out.println("[INFO]Server closed");
+                    stopserver();
+                } else {
+                    writeMessage = "权限不足!";
+                }
+                if (Jurisdiction.equals("DBA")) {
+                    writeMessage = "[INFO]Connected closed...";			// 结束消息
+                    System.out.println("[INFO]Server closed");
+                    stopserver();
+                } else {
+                    writeMessage = "权限不足!";
+                }
+            }
+            if ("restart".equals(readMessage)) { 						// 结束指令
+                writeMessage = "[INFO]Connected closed...";			// 结束消息
+                System.out.println("[INFO]Server closed");
+                restart();
+                stopserver();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.gc();
         return writeMessage;
+    }
+    public static void restart() {
+            try {
+                Runtime rt = Runtime.getRuntime();
+//            Process pr = rt.exec("cmd /c dir");
+//            Process pr = rt.exec("D:/APP/Evernote/Evernote.exe");//open evernote program
+                Process pr = rt.exec("java -jar .//AstralPathSQL.jar server.port=" + PORT) ;//open tim program
+                BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream(),"GBK"));
+                String line = null;
+                while ((line = input.readLine())!=null){
+                    System.out.println(line);
+                }
+                int exitValue = pr.waitFor();
+                System.out.println("Exited with error code "+exitValue);
+            } catch (IOException e) {
+                System.out.println(e.toString());
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
     }
 }

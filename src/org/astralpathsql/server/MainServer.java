@@ -11,6 +11,7 @@ import org.astralpathsql.file.Filer;
 import org.astralpathsql.properties.ProRead;
 import org.astralpathsql.node.BalancedBinaryTree;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -26,7 +27,7 @@ import static org.astralpathsql.print.ColorTest.getFormatLogString;
  *
  */
 public class MainServer {
-    public static String version = "1.111.20220728";
+    public static String version = "1.112.20220729";
     public static BalancedBinaryTree<COREINFORMATION> tree = new BalancedBinaryTree<COREINFORMATION>();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
@@ -37,6 +38,7 @@ public class MainServer {
     public static Cache<Integer, COREINFORMATION> cache = new Cache<>();
     public static Properties prop = null;
     public static Map<String,Table> ta = new HashMap<>();
+    public static ExecutorService executorService = Executors.newFixedThreadPool(19999999);
     public static Map<String,BalancedBinaryTree<COREINFORMATION>> Mtree = new HashMap<>();
     public static boolean flag = true;
     public static int PORT = 9999;
@@ -47,6 +49,17 @@ public class MainServer {
      * AstralPathSQL System
      *
      */
+    public static void stopserver() throws Exception {
+        Filer.writeSQL();
+        ProRead.write();
+        Table.write();
+        System.out.println("[INFO]Server closed");			// 结束消息
+        executorService.shutdown();									// 关闭线程池
+        serverSocketChannel.close();									// 关闭服务端通道
+        selector.close();
+        System.exit(0);
+
+    }
     public static void main(String[] args) {
         Map<String,String> arg = new TreeMap<String,String>();
         for (int x = 0; x < args.length; x ++) {
@@ -54,6 +67,7 @@ public class MainServer {
         }
         System.out.println(getFormatLogString("版本:" + version + "\n" + System.getProperty("os.name"),35,4));
         try {
+            Thread.sleep(1000);
             long start = System.currentTimeMillis();
 
             System.out.println(getFormatLogString("初始化中",34,1));
@@ -68,7 +82,7 @@ public class MainServer {
             tree = Add.addin(tree);//二叉树加载
             System.out.println(getFormatLogString("成功!",32,1));
             System.out.println(getFormatLogString("线程池加载中",34,1));
-            ExecutorService executorService = Executors.newFixedThreadPool(19999999);
+
             System.out.println(getFormatLogString("成功!",32,1));
             all_Connect = Integer.valueOf(prop.getProperty("all_connect"));
             executorService.submit(() -> {
@@ -105,11 +119,7 @@ public class MainServer {
                         System.out.println(out);
                     }
                     if ("exit".equals(msg)) { 						// 结束指令
-                        System.out.println("[INFO]Server closed");			// 结束消息
-                        executorService.shutdown();									// 关闭线程池
-                        serverSocketChannel.close();									// 关闭服务端通道
-                        selector.close();
-                        System.exit(0);
+                        stopserver();
                     }
                 }
             });

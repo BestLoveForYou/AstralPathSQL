@@ -5,9 +5,11 @@ import org.astralpathsql.autoC.Hash;
 import org.astralpathsql.been.User;
 import org.astralpathsql.file.Filer;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
+import static org.astralpathsql.file.Filer.checkIP;
 import static org.astralpathsql.server.MainServer.*;
 
 public class NIOThread implements Runnable {					// 客户端处理线程
@@ -15,17 +17,30 @@ public class NIOThread implements Runnable {					// 客户端处理线程
         private boolean flag = true; 										// 循环标记
         public NIOThread(SocketChannel clientChannel) throws Exception {
             this.clientChannel = clientChannel;							// 保存客户端通道
-            Filer.addIPFile(String.valueOf(clientChannel.getRemoteAddress()));
+            String ip = String.valueOf(clientChannel.getRemoteAddress());
+            Filer.addIPFile(ip.replaceAll("/","").split(":")[0]);
         }
         @Override
         public void run() {												// 线程任务
+            String ip = null;
+            try {
+                ip = String.valueOf(clientChannel.getRemoteAddress());
+                ip = ip.replaceAll("/","").split(":")[0];
+                if (checkIP(ip)) {
+                    this.clientChannel.close(); 								// 关闭通道
+                    now_Connect --;
+                    System.out.println("拦截了一次黑名单连接！IP来源:" + ip);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             ByteBuffer buffer = ByteBuffer.allocate(10000000); 					// 创建缓冲区
             try {
                 buffer.clear();
                 int readCount1 = this.clientChannel.read(buffer); 		// 接收客户端发送数据
                 String readMessage1 = new String(buffer.array(),
                         0, readCount1).trim(); 						// 数据变为字符串
-                String ip = String.valueOf(clientChannel.getRemoteAddress());
                 String ju = User.checkUser(readMessage1);
                 if (!ju.equals("false")) {
                     buffer.clear(); 										// 清空缓冲区

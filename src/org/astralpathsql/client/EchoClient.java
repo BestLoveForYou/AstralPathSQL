@@ -41,6 +41,14 @@ public class EchoClient {
             while (flag) {                                                // 持续输入信息
                 buffer.clear();                                            // 清空缓冲区
                 msg = InputUtil.getString(user[0] + ">");    // 提示信息
+                if ("stop".equals(msg)) {                                    // 结束指令
+                    flag = false;                                        // 结束循环
+                    System.out.println("服务端已暂停！");
+                }
+                if ("restart".equals(msg)) {                                    // 结束指令
+                    flag = false;                                        // 结束循环
+                    System.out.println("服务端正在重启！");
+                }
                 long start = System.currentTimeMillis();
                 buffer.put(msg.getBytes());                                // 数据保存在缓冲区
                 buffer.flip();                                            // 重设缓冲区
@@ -61,6 +69,7 @@ public class EchoClient {
                 if ("exit".equals(msg)) {                                    // 结束指令
                     flag = false;                                        // 结束循环
                 }
+
                 long end = System.currentTimeMillis();
                 long sd = end - start;
                 System.out.println("[" + sd+ " ms]");
