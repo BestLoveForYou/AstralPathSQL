@@ -27,7 +27,7 @@ import static org.astralpathsql.print.ColorTest.getFormatLogString;
  *
  */
 public class MainServer {
-    public static String version = "1.112.20220729";
+    public static String version = "1.113.20220801";
     public static BalancedBinaryTree<COREINFORMATION> tree = new BalancedBinaryTree<COREINFORMATION>();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
@@ -40,6 +40,8 @@ public class MainServer {
     public static Map<String,Table> ta = new HashMap<>();
     public static ExecutorService executorService = Executors.newFixedThreadPool(19999999);
     public static Map<String,BalancedBinaryTree<COREINFORMATION>> Mtree = new HashMap<>();
+    public static String USER;
+    public static String banip;
     public static boolean flag = true;
     public static int PORT = 9999;
     public static String MaxMemory = "1024M";
@@ -58,7 +60,11 @@ public class MainServer {
         serverSocketChannel.close();									// 关闭服务端通道
         selector.close();
         System.exit(0);
-
+    }
+    public static void save() throws Exception {
+        Filer.writeSQL();
+        ProRead.write();
+        Table.write();
     }
     public static void main(String[] args) {
         Map<String,String> arg = new TreeMap<String,String>();
@@ -90,9 +96,7 @@ public class MainServer {
                 while (flag) {
                     try {
                         Thread.sleep(1000);
-                        Filer.writeSQL();
-                        ProRead.write();
-                        Table.write();
+                        save();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     } catch (Exception e) {
@@ -135,6 +139,11 @@ public class MainServer {
             selector = Selector.open();
             // 将当前的ServerSocketChannel统一注册到Selector之中，接受统一的管理
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+            /**
+             *这里写一些需要IO操作的操作
+             */
+            USER = Filer.readUser();
+            Filer.checkIP();
 
             long end = System.currentTimeMillis();
             System.out.println(getFormatLogString("全部启动完成! 共耗时:" + (end - start) + "ms",32,1));

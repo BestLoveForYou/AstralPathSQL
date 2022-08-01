@@ -26,7 +26,7 @@ public class NIOThread implements Runnable {					// 客户端处理线程
             try {
                 ip = String.valueOf(clientChannel.getRemoteAddress());
                 ip = ip.replaceAll("/","").split(":")[0];
-                if (checkIP(ip)) {
+                if (banip.contains(ip)) {
                     this.clientChannel.close(); 								// 关闭通道
                     now_Connect --;
                     System.out.println("拦截了一次黑名单连接！IP来源:" + ip);

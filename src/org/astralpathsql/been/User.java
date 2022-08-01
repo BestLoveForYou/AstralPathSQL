@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 import static org.astralpathsql.autoC.Hash.decode;
+import static org.astralpathsql.server.MainServer.USER;
 
 public class User {
     String username;
@@ -26,23 +27,8 @@ public class User {
     }
     public static String checkUser(String c) {
         try {
-            File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "user.txt");			// 定义文件路径
 
-            FileInputStream input = new FileInputStream(file);					// 文件输入流
-            FileChannel channel = input.getChannel(); 							// 获取文件通道
-            ByteBuffer buffer = ByteBuffer.allocate(100); 						// 开辟缓冲大小
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(); 			// 内存输出流
-            int count = 0; 													// 保存读取个数
-            while ((count = channel.read(buffer)) != -1) {						// 缓冲区读取
-                buffer.flip(); 												// 重置缓冲区
-                while (buffer.hasRemaining()) { 								// 是否还有数据
-                    bos.write(buffer.get()); 									// 内容写入内存流
-                }
-                buffer.clear();												// 清空缓冲区
-            }
-            channel.close();													// 关闭通道
-            input.close();
-            String a =new String(bos.toByteArray());
+            String a = USER;
             a = decode(a);
             String res[] = a.split("§");
             for (int x = 0 ;x <res.length; x ++) {
@@ -55,7 +41,7 @@ public class User {
                 }
             }
             return "false";
-        } catch (IOException e) {
+        } catch (Exception e) {
             return "false";
         }
     }

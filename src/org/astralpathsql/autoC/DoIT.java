@@ -241,9 +241,23 @@ public class DoIT {
                             return writeMessage;
                         }
                     } else if(!sl.equals("*")){
-                        writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3]);
-                        writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                        return writeMessage;
+                        try {
+                            if (sp[4].equals("where")) {
+                                sp[5] = sp[5].replaceAll("=","'") + "'";
+                                writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3],sp[5]);
+                                writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                                return writeMessage;
+                            } else {
+                                writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3]);
+                                writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                                return writeMessage;
+                            }
+                        } catch (Exception e) {
+                            writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3]);
+                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                            return writeMessage;
+                        }
+
                     }
                 } else {
                     if (sl.equals("*")) {
@@ -461,6 +475,7 @@ public class DoIT {
                         writeMessage = "权限不足!";
                     }
                 }
+                USER = Filer.readUser();
             }
             if ("exit".equals(readMessage)) { 						// 结束指令
                 writeMessage = "[INFO]Connected closed...";			// 结束消息

@@ -266,7 +266,7 @@ public class Filer {
 
         }
     }
-    public static boolean checkIP(String ip) {
+    public static void checkIP() {
         try {
             File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "banip.txt");
             if (!file.getParentFile().exists()) { 							// 父路径不存在
@@ -291,13 +291,27 @@ public class Filer {
             }
             channel.close();													// 关闭通道
             input.close();
-            String a = new String(bos.toByteArray());
-            if (a.contains(ip)) {
-                return true;
-            }
-            return false;
+            banip = new String(bos.toByteArray());
         } catch (Exception e) {
-            return true;
         }
+    }
+    public static String readUser() throws IOException {
+        File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "user.txt");			// 定义文件路径
+
+        FileInputStream input = new FileInputStream(file);					// 文件输入流
+        FileChannel channel = input.getChannel(); 							// 获取文件通道
+        ByteBuffer buffer = ByteBuffer.allocate(100); 						// 开辟缓冲大小
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(); 			// 内存输出流
+        int count = 0; 													// 保存读取个数
+        while ((count = channel.read(buffer)) != -1) {						// 缓冲区读取
+            buffer.flip(); 												// 重置缓冲区
+            while (buffer.hasRemaining()) { 								// 是否还有数据
+                bos.write(buffer.get()); 									// 内容写入内存流
+            }
+            buffer.clear();												// 清空缓冲区
+        }
+        channel.close();													// 关闭通道
+        input.close();
+        return new String(bos.toByteArray());
     }
 }
