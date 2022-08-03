@@ -41,6 +41,9 @@ You can change the config (such as the port) to change application's port .Warni
 # v1.110 series 
  In this series, there have been a large range of changes, and other items except for the table class can still be supported downwards.
 This version has a high probability of bugs (because the engine has changed)
+ ## 1.113.20220801
+ - Fixed a bug in the form.
+ - Optimized program
  ## 1.112.20220729
  - Support remote shutdown / restart of database
  - Blocking, blocking IP and other new functions
