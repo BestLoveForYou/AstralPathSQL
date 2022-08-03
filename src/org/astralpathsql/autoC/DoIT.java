@@ -1,9 +1,11 @@
 package org.astralpathsql.autoC;
 
 import org.astralpathsql.autoC.form.Table;
+import org.astralpathsql.autoC.form.TreeSearch;
 import org.astralpathsql.been.COREINFORMATION;
+import org.astralpathsql.file.Add;
 import org.astralpathsql.file.Filer;
-import org.astralpathsql.properties.ProRead;
+import org.astralpathsql.node.BalancedBinaryTree;
 import org.astralpathsql.server.MainServer;
 
 import java.io.BufferedReader;
@@ -11,26 +13,40 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.astralpathsql.file.Add.add;
-import static org.astralpathsql.file.Filer.BanIPFile;
+import static org.astralpathsql.file.Filer.*;
 import static org.astralpathsql.server.MainServer.*;
 import static org.astralpathsql.server.MainServer.now_Connect;
 
 public class DoIT {
     /**
      * 这是实现模块,包括所有数据库功能
-     * @param readMessage
-     * @return
      */
-    public static String doit(String readMessage,String Jurisdiction,String ip) {
+    public static String doit(String readMessage, String Jurisdiction, String ip) throws IOException{
 
-        String sp[] = readMessage.split(" ");
-        String writeMessage = "无效指令!";
+        String[] sp = readMessage.split(" ");
+        String writeMessage = "-1";
         try {
+            if (sp[0].equals("use")) {
+                MainServer.ta.clear();
+                File file = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator + sp[1] + File.separator + "save.ap");			// 定义文件路径
+                if (!file.exists()) {
+                    return writeMessage="数据库不存在";
+                }
+                database = file;
+                table = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator + sp[1] + File.separator + "table.txt");			// 定义文件路径
+
+                tree = new BalancedBinaryTree<COREINFORMATION>();
+
+
+                Table.read();//生成表
+                TreeSearch.load();
+                tree = Add.addin(tree);//二叉树加载
+                writeMessage = "1";
+            }
             if (sp[0].equals("set")) {
                 if (sp[1].equals("table")) {
                     String prop = sp[3];
@@ -48,6 +64,17 @@ public class DoIT {
                     }
 
                 }
+            }
+            if (sp[0].equals("show")) {
+                if (sp[1].equals("database")) {
+                    List<String> a = Filer.readDB();
+                    writeMessage = "+---Database-------§|";
+                    for (int x = 0 ; x < a.size(); x ++) {
+                        writeMessage = writeMessage + a.get(x) + "§|";
+                    }
+                    writeMessage = writeMessage + "§+------------------";
+                }
+
             }
             if (sp[0].equals("banip")) {
                 BanIPFile(sp[1]);
@@ -189,7 +216,10 @@ public class DoIT {
                     } else {
                         writeMessage = "1";
                     }
-
+                }
+                if (sp[1].equals("database")) {
+                    createDB(sp[2]);
+                    writeMessage = "1";
                 }
             }
             /**
@@ -198,6 +228,10 @@ public class DoIT {
             if (sp[0].equals("drop")) {
                 if(sp[1].equals("table")) {
                     ta.remove(sp[2]);
+                    writeMessage = "1";
+                }
+                if (sp[1].equals("database")) {
+                    removeDB(sp[2]);
                     writeMessage = "1";
                 }
             }

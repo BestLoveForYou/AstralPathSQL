@@ -11,6 +11,7 @@ import org.astralpathsql.file.Filer;
 import org.astralpathsql.properties.ProRead;
 import org.astralpathsql.node.BalancedBinaryTree;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
@@ -27,7 +28,7 @@ import static org.astralpathsql.print.ColorTest.getFormatLogString;
  *
  */
 public class MainServer {
-    public static String version = "1.113.20220801";
+    public static String version = "1.114.20220803";
     public static BalancedBinaryTree<COREINFORMATION> tree = new BalancedBinaryTree<COREINFORMATION>();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
@@ -42,6 +43,8 @@ public class MainServer {
     public static Map<String,BalancedBinaryTree<COREINFORMATION>> Mtree = new HashMap<>();
     public static String USER;
     public static String banip;
+    public static File database;
+    public static File table;
     public static boolean flag = true;
     public static int PORT = 9999;
     public static String MaxMemory = "1024M";
@@ -91,19 +94,7 @@ public class MainServer {
 
             System.out.println(getFormatLogString("成功!",32,1));
             all_Connect = Integer.valueOf(prop.getProperty("all_connect"));
-            executorService.submit(() -> {
-                System.out.println(getFormatLogString("定时任务已启动成功!",32,1));
-                while (flag) {
-                    try {
-                        Thread.sleep(1000);
-                        save();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
+
             executorService.submit(() -> {
                 try {
                     Thread.sleep(1000);

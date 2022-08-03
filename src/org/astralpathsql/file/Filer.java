@@ -9,6 +9,8 @@ import org.astralpathsql.node.BalancedBinaryTree;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.astralpathsql.autoC.Hash.decode;
 import static org.astralpathsql.autoC.Hash.encode;
@@ -18,16 +20,7 @@ import static org.astralpathsql.server.MainServer.ta;
 public class Filer {
     public static void createInFirst() {
         try {
-            File file = new File("." + File.separator + "apsql" + File.separator + "save.txt");			// 定义文件路径
-            if (!file.getParentFile().exists()) { 							// 父路径不存在
-                file.getParentFile().mkdirs(); 							// 创建父路径
-            }
-            if (file.exists()) {											// 文件存在
-
-            } else { 													// 文件不存在
-                file.createNewFile(); 					// 创建新的文件
-            }
-            file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "info.properties");			// 定义文件路径
+            File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "info.properties");			// 定义文件路径
             if (!file.getParentFile().exists()) { 							// 父路径不存在
                 file.getParentFile().mkdirs(); 							// 创建父路径
             }
@@ -37,7 +30,7 @@ public class Filer {
                 file.createNewFile(); 					// 创建新的文件
                 ProRead.write();
             }
-            file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "table.txt");			// 定义文件路径
+            file = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator + "default" + File.separator + "table.txt");			// 定义文件路径
             if (!file.getParentFile().exists()) { 							// 父路径不存在
                 file.getParentFile().mkdirs(); 							// 创建父路径
             }
@@ -46,6 +39,7 @@ public class Filer {
             } else { 													// 文件不存在
                 file.createNewFile(); 					// 创建新的文件
             }
+            table = file;
             file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "user.txt");			// 定义文件路径
             if (!file.getParentFile().exists()) { 							// 父路径不存在
                 file.getParentFile().mkdirs(); 							// 创建父路径
@@ -56,17 +50,28 @@ public class Filer {
                 file.createNewFile(); 					// 创建新的文件
                 String a = encode("root:123456:ADMIN§");
                 PrintWriter pu = new PrintWriter(new FileOutputStream(file), Boolean.parseBoolean("utf-8"));
-
                 pu.print(a);
                 pu.close();
             }
+            file = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator + "default" + File.separator + "save.ap");			// 定义文件路径
+            if (!file.getParentFile().exists()) { 							// 父路径不存在
+                file.getParentFile().mkdirs(); 							// 创建父路径
+            }
+            if (file.exists()) {											// 文件存在
+
+            } else { 													// 文件不存在
+                file.createNewFile(); 					// 创建新的文件
+                PrintWriter pu = new PrintWriter(new FileOutputStream(file), Boolean.parseBoolean("utf-8"));
+                pu.close();
+            }
+            database = file;//设置数据库
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     public static ByteArrayOutputStream readSQL() {
         try {
-            File file = new File("." + File.separator + "apsql" + File.separator + "save.txt");			// 定义文件路径
+            File file = database;
             if (!file.getParentFile().exists()) { 							// 父路径不存在
                 file.getParentFile().mkdirs(); 							// 创建父路径
             }
@@ -97,7 +102,7 @@ public class Filer {
     }
     public static ByteArrayOutputStream readTable() {
         try {
-            File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "table.txt");			// 定义文件路径
+            File file = table;
             if (!file.getParentFile().exists()) { 							// 父路径不存在
                 file.getParentFile().mkdirs(); 							// 创建父路径
             }
@@ -200,7 +205,7 @@ public class Filer {
         try {
             String a = tree.forW();
 
-            File file = new File("." + File.separator + "apsql" + File.separator + "save.txt");
+            File file = database;
             if (!file.getParentFile().exists()) { 							// 父路径不存在
                 file.getParentFile().mkdirs(); 							// 创建父路径
             }
@@ -313,5 +318,32 @@ public class Filer {
         channel.close();													// 关闭通道
         input.close();
         return new String(bos.toByteArray());
+    }
+    public static void createDB(String db) throws IOException {
+        File file = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator + db + File.separator + "save.ap");			// 定义文件路径
+        if (!file.getParentFile().exists()) { 							// 父路径不存在
+            file.getParentFile().mkdirs(); 							// 创建父路径
+        }
+        if (file.exists()) {											// 文件存在
+
+        } else { 													// 文件不存在
+            file.createNewFile(); 					// 创建新的文件
+        }
+        file = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator + db + File.separator + "table.txt");			// 定义文件路径
+        file.createNewFile();
+    }
+    public static void removeDB(String db) {
+        File file = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator + db + File.separator + "save.ap");			// 定义文件路径
+        file.delete();
+        file = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator + db + File.separator + "table.txt");			// 定义文件路径
+        file.delete();
+    }
+    public static List<String> readDB() {
+        File f[] = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator).listFiles();
+        List<String> a = new ArrayList<>();
+        for(int x = 0 ; x < f.length ; x ++) {
+            a.add(f[x].getName());
+        }
+        return a;
     }
 }

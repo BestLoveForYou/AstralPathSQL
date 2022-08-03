@@ -63,8 +63,7 @@ public class Table {
     }
     public static Integer write() throws Exception{
         try {
-
-            File file = new File("." + File.separator + "apsql" + File.separator + "config" + File.separator + "table.txt");
+            File file = MainServer.table;
             if (!file.getParentFile().exists()) { 							// 父路径不存在
                 file.getParentFile().mkdirs(); 							// 创建父路径
             }

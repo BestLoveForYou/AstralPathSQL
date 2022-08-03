@@ -64,6 +64,7 @@ public class NIOThread implements Runnable {					// 客户端处理线程
                     String readMessage = new String(buffer.array(),
                             0, readCount).trim(); 						// 数据变为字符串
                     String writeMessage = DoIT.doit(readMessage,ju,ip);
+                    save();
                     if ("exit".equals(readMessage)) { 						// 结束指令
                         writeMessage = "[INFO]Connected closed...";			// 结束消息
                         this.flag = false; 								// 修改标记

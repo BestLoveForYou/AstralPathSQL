@@ -10,6 +10,7 @@ import static org.astralpathsql.server.MainServer.ta;
 
 public class TreeSearch {
     public static void load() {
+        Mtree.clear();
         for(String key:ta.keySet()){
             Table t = ta.get(key);
             if(t.getProp().equals("1")) {
