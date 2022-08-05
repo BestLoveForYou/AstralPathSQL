@@ -1,1 +1,1 @@
-name:Test|table:char 请勿在无其他表时删除|prop:null§
+name:cac|table:int id,char n|prop:1§name:Test|table:char 请勿在无其他表时删除|prop:null§

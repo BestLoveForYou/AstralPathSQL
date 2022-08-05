@@ -494,8 +494,29 @@ public class BalancedBinaryTree<T> {
                 if (r[x].contains(v)) {
                     if (ta[0].equals(t)) {
                         if (a.getINFO().contains(info)) {
-                            System.out.println(1);
                             String ch[] = r[x].split("'");
+                            res.append(ch[1]);
+                            res.append("§");
+                        }
+                    }
+                }
+            }
+
+        });
+        return res.toString();
+    }
+    public String selectL(String v,String t,String info,String like) {
+        StringBuilder res = new StringBuilder();
+        traverse(root, n -> {
+            COREINFORMATION a = (COREINFORMATION) n.data;
+            String r[] = a.getINFO().split(";");
+            String ta[] = a.getTable().split(":");
+            for (int x = 0; x < r.length; x ++) {
+                if (r[x].contains(v)) {
+                    if (ta[0].equals(t)) {
+                        if (a.getINFO().contains(info)) {
+                            String ch[] = r[x].split("'");
+
                             res.append(ch[1]);
                             res.append("§");
                         }
@@ -523,7 +544,30 @@ public class BalancedBinaryTree<T> {
         }
         return this.root.getId(data);                    // Node类查询
     }
+    public String getId(Comparable<T> data,String i) {
+        if (this.size == 0) {                                    // 没有数据
+            return "false";                                        // 结束查询
+        }
+        COREINFORMATION a = (COREINFORMATION) this.root.getId(data);                    // Node类查询
+        StringBuilder res = new StringBuilder();
+        String r[] = a.getINFO().split(";");
+        for (int x = 0; x < r.length; x ++) {
+            if (r[x].contains(i)) {
+                if (a.getINFO().contains(i)) {
+                    String ch[] = r[x].split("'");
+                    if (ch[1].isEmpty()) {
 
+                    } else {
+                        res.append(ch[1]);
+                        res.append("§");
+                    }
+
+                }
+            }
+
+        }
+        return res.toString();
+    }
 
     class Node {
         private Node parent;

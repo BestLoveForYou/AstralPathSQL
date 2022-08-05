@@ -148,6 +148,7 @@ public class DoIT {
                             String id = a.substring(a.indexOf("id"));
                             id = id.replaceFirst("id'","");
                             id = id.substring(0,id.indexOf("'"));
+                            System.out.println(id);
                             c.setId(Integer.valueOf(id));
                         } else {
                             c.setId(tree.size());
@@ -245,6 +246,26 @@ public class DoIT {
                         try {
                             if (sp[2].equals("from")) {
                                 if (sp[4].equals("where")) {
+                                    try {
+                                        if (sp[6].equals("like")) {
+                                            String a = Mtree.get(sp[3]).forI(sp[5]);
+                                            String b[] = a.split("§");
+                                            writeMessage = "";
+                                            for (int x=0;x < b.length; x ++) {
+                                                COREINFORMATION emp = ClassInstanceFactory.create(COREINFORMATION.class, b[x]) ;	// 工具类自动设置
+                                                String c = emp.getINFO();
+                                                String d = c.substring(c.indexOf(sp[5]));
+                                                d = d.substring(0,d.indexOf(";"));
+                                                d = d.replaceAll(sp[5],"");
+                                                if (d.contains(sp[7])) {
+                                                    writeMessage = writeMessage + c + "§";
+                                                }
+                                            }
+                                            return writeMessage;
+                                        }
+                                    } catch (Exception e) {
+
+                                    }
                                     if (sp[5].contains("id=")) {
                                         String value = "id:" +sp[5].split("=")[1] + "|hiredate:2022-07-27|INFO:null|table:null§";
                                         COREINFORMATION c = ClassInstanceFactory.create(COREINFORMATION.class, value) ;	// 工具类自动设置
@@ -276,16 +297,117 @@ public class DoIT {
                         }
                     } else if(!sl.equals("*")){
                         try {
-                            if (sp[4].equals("where")) {
-                                sp[5] = sp[5].replaceAll("=","'") + "'";
-                                writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3],sp[5]);
-                                writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                                return writeMessage;
+                            if (sl.contains(",")) {
+                                try {
+                                    if (sp[4].equals("where")) {
+                                        try {
+                                            if (sp[6].equals("like")) {
+                                                String a = Mtree.get(sp[3]).forI(sp[5]);
+                                                String b[] = a.split("§");
+                                                writeMessage = "---" + sp[1] + "-------§";
+                                                for (int x=0;x < b.length; x ++) {
+                                                    COREINFORMATION emp = ClassInstanceFactory.create(COREINFORMATION.class, b[x]) ;	// 工具类自动设置
+                                                    String c = emp.getINFO();
+                                                    String d = c.substring(c.indexOf(sp[5]));
+                                                    d = d.substring(0,d.indexOf(";"));
+                                                    d = d.replaceAll(sp[5],"");
+                                                    if (d.contains(sp[7])) {
+                                                        String r[] = sp[1].split(",");
+                                                        for (int y = 0 ;y < r.length ; y ++) {
+                                                            d = c.substring(c.indexOf(r[y]));
+                                                            d = d.substring(0,d.indexOf(";"));
+                                                            d = d.replaceAll(r[y] + "'","");
+                                                            d = d.replaceAll("'","");
+                                                            writeMessage = writeMessage + d + "|";
+                                                        }
+                                                        writeMessage = writeMessage + "§";
+                                                    }
+                                                }
+                                                return writeMessage;
+                                            }
+                                        }catch (Exception e) {}
+                                        if (sp[5].contains("id=")) {
+                                            String value = "id:" +sp[5].split("=")[1] + "|hiredate:2022-07-27|INFO:null|table:null§";
+                                            COREINFORMATION c = ClassInstanceFactory.create(COREINFORMATION.class, value) ;	// 工具类自动设置
+                                            String i[] = sl.split(",");
+                                            writeMessage = "";
+                                            for (int x =0 ; x < i.length; x ++) {
+                                                String a= Mtree.get(sp[3]).getId(c,i[x]);
+                                                if (!a.equals("")) {
+                                                    writeMessage = writeMessage + a;
+                                                }
+                                            }
+                                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                                            return writeMessage;
+                                        } else {
+                                            String i[] = sl.split(",");
+                                            writeMessage = "";
+                                            sp[5] = sp[5].replaceAll("=","'") + "'";
+
+                                            for (int x =0 ; x < i.length; x ++) {
+                                                String a=  Mtree.get(sp[3]).select(i[x],sp[3],sp[5]);
+                                                if (!a.equals("")) {
+                                                    writeMessage = writeMessage + a;
+                                                }
+                                            }
+                                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                                            return writeMessage;
+                                        }
+
+                                    }
+                                } catch (Exception e) {
+                                    String i[] = sl.split(",");
+                                    writeMessage = "";
+                                    for (int x =0 ; x < i.length; x ++) {
+                                        String a= Mtree.get(sp[3]).select(i[x],sp[3]);
+                                        if (!a.equals("")) {
+                                            writeMessage = writeMessage + a;
+                                        }
+                                    }
+                                    writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                                    return writeMessage;
+                                }
+
                             } else {
-                                writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3]);
+                                if (sp[4].equals("where")) {
+                                    try {
+                                        if (sp[6].equals("like")) {
+                                            String a = Mtree.get(sp[3]).forI(sp[5]);
+                                            String b[] = a.split("§");
+                                            writeMessage = "+--" + sp[1] + "------+§";
+                                            for (int x=0;x < b.length; x ++) {
+                                                COREINFORMATION emp = ClassInstanceFactory.create(COREINFORMATION.class, b[x]) ;	// 工具类自动设置
+                                                String c = emp.getINFO();
+                                                String d = c.substring(c.indexOf(sp[5]));
+                                                d = d.substring(0,d.indexOf(";"));
+                                                d = d.replaceAll(sp[5],"");
+                                                if (d.contains(sp[7])) {
+                                                    d = c.substring(c.indexOf(sp[1]));
+                                                    d = d.substring(0,d.indexOf(";"));
+                                                    d = d.replaceAll(sp[1] + "'","");
+                                                    d = d.replaceAll("'","");
+                                                    writeMessage = writeMessage + d + "§";
+                                                }
+                                            }
+                                            return writeMessage;
+                                        }
+                                    }catch (Exception e) {}
+
+                                    if (sp[5].contains("id=")) {
+                                        String value = "id:" +sp[5].split("=")[1] + "|hiredate:2022-07-27|INFO:null|table:null§";
+                                        COREINFORMATION c = ClassInstanceFactory.create(COREINFORMATION.class, value) ;	// 工具类自动设置
+                                        writeMessage = Mtree.get(sp[3]).getId(c,sp[1]);
+                                    } else {
+                                        sp[5] = sp[5].replaceAll("=","'") + "'";
+                                        writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3],sp[5]);
+                                    }
+                                } else {
+                                    writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3]);
+                                }
                                 writeMessage = "+--" + sl + "--+\n" + writeMessage;
                                 return writeMessage;
                             }
+
                         } catch (Exception e) {
                             writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3]);
                             writeMessage = "+--" + sl + "--+\n" + writeMessage;
@@ -298,7 +420,7 @@ public class DoIT {
                         if (sp[2].equals("from")) {
                             try {
                                 if (sp[4].equals("where")) {
-                                    sp[5] = sp[5].replaceAll("=","`") + "`";
+                                    sp[5] = sp[5].replaceAll("=","'") + "'";
                                     String a = tree.forTa(sp[3],sp[5]);
                                     writeMessage = a;
                                     return  writeMessage;
@@ -314,10 +436,55 @@ public class DoIT {
                             return writeMessage;
                         }
                     } else if(!sp.equals("*")){
-                        writeMessage = tree.select(sp[1],sp[3]);
-                        writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                        return writeMessage;
+                        try {
+                            if (sl.contains(",")) {
+                                try {
+                                    if (sp[4].equals("where")) {
+                                            String i[] = sl.split(",");
+                                            writeMessage = "";
+                                            sp[5] = sp[5].replaceAll("=","'") + "'";
+
+                                            for (int x =0 ; x < i.length; x ++) {
+                                                String a=  tree.select(i[x],sp[3],sp[5]);
+                                                if (!a.equals("")) {
+                                                    writeMessage = writeMessage + a;
+                                                }
+                                            }
+                                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                                            return writeMessage;
+
+                                    }
+                                } catch (Exception e) {
+                                    String i[] = sl.split(",");
+                                    writeMessage = "";
+                                    for (int x =0 ; x < i.length; x ++) {
+                                        String a= tree.select(i[x],sp[3]);
+                                        if (!a.equals("")) {
+                                            writeMessage = writeMessage + a;
+                                        }
+                                    }
+                                    writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                                    return writeMessage;
+                                }
+
+                            } else {
+                                if (sp[4].equals("where")) {
+                                        sp[5] = sp[5].replaceAll("=","'") + "'";
+                                        writeMessage = tree.select(sp[1],sp[3],sp[5]);
+                                } else {
+                                    writeMessage = tree.select(sp[1],sp[3]);
+                                }
+                                writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                                return writeMessage;
+                            }
+
+                        } catch (Exception e) {
+                            writeMessage = tree.select(sp[1],sp[3]);
+                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
+                            return writeMessage;
+                        }
                     }
+
                     String a = tree.forT(sp[3]);
                     writeMessage = a;
                 }
@@ -329,8 +496,6 @@ public class DoIT {
              */
             if (sp[0].equals("delete")) {
                 if (sp[3].equals("where")) {
-                    String sl = sp[1];
-                    COREINFORMATION sc = new COREINFORMATION();
                     String table = sp[2];
                     if (sp[4].contains("=")) {
                         sp[4] = sp[4].replaceAll("=","'");
@@ -367,8 +532,17 @@ public class DoIT {
                     String res[] = a.split("\\|");
                     int ind = res[2].lastIndexOf(ca[0]);
                     String handle = res[2].substring(0,ind);
-                    String end = res[2].substring(ind + work.length() + 2);
-                    handle = res[0] + "|" + res[1] + "|" + handle + work.replaceFirst(";","") + end + "|table:" + table + "§";
+                    int i = res[2].indexOf(work.split("'")[0]);
+                    String w2 = res[2].substring(i);
+                    w2 = w2.replaceFirst("'","");
+                    w2 = w2.replaceAll(work.split("'")[0],"");
+                    w2 = w2.substring(0,w2.indexOf("'"));
+                    String end = res[2].substring(ind + work.split("'")[0].length() + w2.length() + 1);
+                    if (handle.contains("'")) {
+                        handle = res[0] + "|" + res[1] + "|" + handle + work.replaceFirst("';","") + end + "|table:" + table + "§";
+                    } else {
+                        handle = res[0] + "|" + res[1] + "|" + handle + work.replaceFirst("';","") + end + "|table:" + table + "§";
+                    }
                     System.out.println(handle);
                     COREINFORMATION c = add(handle);
                     if (Mtree.containsKey(table)) {
