@@ -17,25 +17,21 @@
 
 **Server**:   
 **function:**   
-Including select, insert, update and delete are supported!  
+Supported basis sql language   
 
 other function:   
 **User authentication**:    
 The format is username: password. User data can be added and deleted on the server or on the client that has passed user authentication
 Example: user add root:123456, the default user is root:123456
 **Underlying code**:    
-getall - Get all data
-status - Get the number of connections, status, etc
-**Currently, functions are being developed:**   
-Cache function, user permissions, and better optimization
-
+status - Get the number of connections, status, etc   
+Cache function, user permissions, and better optimization  
 **Client**:   
 Enter IP and port number first, example: 127.0.0.1:9999
 Then authenticate to use
 
 # Config
 The config of it (info.properties) include port , all_connect , and change_time   
-You can change the config (such as the port) to change application's port .Warning: you need to close the program before changing the configuration file, otherwise it will be overwritten
 
 # Update records
 # v1.110 series 
