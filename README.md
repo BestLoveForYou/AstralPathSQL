@@ -42,6 +42,7 @@ You can change the config (such as the port) to change application's port .Warni
  In this series, there have been a large range of changes, and other items except for the table class can still be supported downwards.
 This version has a high probability of bugs (because the engine has changed)
  ## 1.115.20220805-NatusVincere
+ - log system
  - Phase final version, expected after 1 month next update
  - A " like " syntax to support searching
  - Fixed bug of update
