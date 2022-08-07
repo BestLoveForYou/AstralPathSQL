@@ -9,7 +9,9 @@ import org.astralpathsql.node.BalancedBinaryTree;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.astralpathsql.autoC.Hash.decode;
@@ -65,6 +67,18 @@ public class Filer {
                 pu.close();
             }
             database = file;//设置数据库
+            SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+            file = new File("." + File.separator + "apsql" + File.separator + "log" + File.separator + s.format(new Date()) + File.separator + "log.txt");			// 定义文件路径
+            if (!file.getParentFile().exists()) { 							// 父路径不存在
+                file.getParentFile().mkdirs(); 							// 创建父路径
+            }
+            if (file.exists()) {											// 文件存在
+
+            } else { 													// 文件不存在
+                file.createNewFile(); 					// 创建新的文件
+                PrintWriter pu = new PrintWriter(new FileOutputStream(file), Boolean.parseBoolean("utf-8"));
+                pu.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -345,5 +359,13 @@ public class Filer {
             a.add(f[x].getName());
         }
         return a;
+    }
+    public static void writeLog(String w,String ip) throws FileNotFoundException {
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+        File file = new File("." + File.separator + "apsql" + File.separator + "log" + File.separator + s.format(new Date()) + File.separator + "log.txt");
+        PrintWriter pu = new PrintWriter(new FileOutputStream(file,true), Boolean.parseBoolean("utf-8"));
+        s = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        pu.println(ip + "|" + s.format(new Date()) + "|" + w);
+        pu.close();
     }
 }

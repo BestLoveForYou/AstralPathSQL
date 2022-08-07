@@ -3,15 +3,13 @@ package org.astralpathsql.autoC;
 import org.astralpathsql.autoC.form.Table;
 import org.astralpathsql.autoC.form.TreeSearch;
 import org.astralpathsql.been.COREINFORMATION;
+import org.astralpathsql.client.InputUtil;
 import org.astralpathsql.file.Add;
 import org.astralpathsql.file.Filer;
 import org.astralpathsql.node.BalancedBinaryTree;
 import org.astralpathsql.server.MainServer;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +24,13 @@ public class DoIT {
      * 这是实现模块,包括所有数据库功能
      */
     public static String doit(String readMessage, String Jurisdiction, String ip) throws IOException{
-
+        writePool.submit(() -> {
+            try {
+                Filer.writeLog(readMessage,ip);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
         String[] sp = readMessage.split(" ");
         String writeMessage = "-1";
         try {

@@ -12,6 +12,7 @@ import org.astralpathsql.properties.ProRead;
 import org.astralpathsql.node.BalancedBinaryTree;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
@@ -40,6 +41,7 @@ public class MainServer {
     public static Properties prop = null;
     public static Map<String,Table> ta = new HashMap<>();
     public static ExecutorService executorService = Executors.newFixedThreadPool(19999999);
+    public static ExecutorService writePool = Executors.newFixedThreadPool(100);
     public static Map<String,BalancedBinaryTree<COREINFORMATION>> Mtree = new HashMap<>();
     public static String USER;
     public static String banip;
@@ -139,6 +141,13 @@ public class MainServer {
             long end = System.currentTimeMillis();
             System.out.println(getFormatLogString("全部启动完成! 共耗时:" + (end - start) + "ms",32,1));
             System.out.println(getFormatLogString("服务端启动程序成功，该程序在 " + PORT + " 端口上监听\n最大可用内存为:" + MaxMemory,35,4));
+            writePool.submit(() -> {
+                try {
+                    Filer.writeLog("Server started!port:" + PORT,"\nServer");
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             // 所有的连接处理都需要被Selector所管理，也就是说只要有新的用户连接，那么就通过Selector处理
             int keySelect = 0; 											// 接收连接状态
 
