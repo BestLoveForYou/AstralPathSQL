@@ -1,20 +1,22 @@
 package org.astralpathsql.autoC;
 
+import org.astralpathsql.autoC.core.DELETE;
+import org.astralpathsql.autoC.core.INSERT;
+import org.astralpathsql.autoC.core.SELECT;
+import org.astralpathsql.autoC.core.UPDATE;
 import org.astralpathsql.autoC.form.Table;
 import org.astralpathsql.autoC.form.TreeSearch;
 import org.astralpathsql.been.COREINFORMATION;
-import org.astralpathsql.client.InputUtil;
 import org.astralpathsql.file.Add;
 import org.astralpathsql.file.Filer;
 import org.astralpathsql.node.BalancedBinaryTree;
+import org.astralpathsql.properties.ProRead;
 import org.astralpathsql.server.MainServer;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static org.astralpathsql.file.Add.add;
 import static org.astralpathsql.file.Filer.*;
 import static org.astralpathsql.server.MainServer.*;
 import static org.astralpathsql.server.MainServer.now_Connect;
@@ -35,6 +37,7 @@ public class DoIT {
         String writeMessage = "-1";
         try {
             if (sp[0].equals("use")) {
+                MainServer.save();
                 MainServer.ta.clear();
                 File file = new File("." + File.separator + "apsql" + File.separator + "db" + File.separator + sp[1] + File.separator + "save.ap");			// 定义文件路径
                 if (!file.exists()) {
@@ -58,8 +61,13 @@ public class DoIT {
                     if (prop.equals("1")) {
                         if (t.getTable().contains("int id")) {
                             t.setProp(prop);
-                            System.out.println("请重新启动！");
-                            writeMessage = "命令已执行！重新启动后生效";
+                            MainServer.save();
+                            MainServer.ta.clear();
+                            tree = new BalancedBinaryTree<COREINFORMATION>();
+                            Table.read();//生成表
+                            TreeSearch.load();
+                            tree = Add.addin(tree);//二叉树加载
+                            writeMessage = "1";
                         }
                     } else {
                         t.setProp(prop);
@@ -85,88 +93,22 @@ public class DoIT {
                 writeMessage = "已完成！封禁IP:" + sp[1];
             }
             if (sp[0].equals("save")) {
-                writeMessage = String.valueOf(Filer.writeSQL());
+                writePool.submit(() -> {
+
+                            try {
+                                ProRead.write();
+                                Table.write();
+                                Filer.writeSQL();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        );
+                writeMessage = "1";
+
             }
             if (sp[0].equals("insert")) {
-                if (sp[1].equals("into")) {
-                    /**
-                     * @Date 2022-07-14
-                     * 添加功能完成!!!!!!和sql语句一模一样,但不能使用大写
-                     * @Date 2022-07-16  数据不全时更新失败bug已解决
-                     *
-                     */
-                    if (sp[3].equals("values")) {
-                        String ch = sp[2];
-                        //数据表
-                        String res[] = ch.split("\\(");
-                        sp[4] = sp[4].replaceAll("\\(", "");
-                        sp[4] = sp[4].replaceAll("\\)", "");
-                        res[1] = res[1].replaceAll("\\)", "");//去除(和)
-                        String tabler[] = res[1].split(",");//为输入中的数据格式
-                        Table t = ta.get(res[0]);//获取表格中的数据格式
-                        String res2[] = t.getTable().split(",");
-                        COREINFORMATION c = new COREINFORMATION();
-                        String value[] = sp[4].split(",");
-                        String add = "";//这是要处理的数据,将要保存
-                        String tab = "";
-                        int y = 0;
-                        int x;
-                        for (x = 0; x < res2.length; x++) {
-                            String prof[] = res2[y].split(" ");
-                            try {
-                                if (prof[1].equals(tabler[x])) {//检验是否匹配 prof[0]为格式,prof[1[为数据名称
-                                    add = add + prof[1] + value[x] + ";";
-                                    tab = tab + tabler[x] + ",";
-                                    if (y == res.length) {
-                                        break;
-                                    }
-                                } else {
-                                    y++;
-                                    x--;
-                                }
-                            } catch (Exception e) {
-                            }
-                        }
-
-
-                        c.setTable(res[0]);
-                        String r[] = t.getTable().split(",");
-                        String tabe = "";
-                        for (int xa = 0; xa < r.length; xa++) {
-                            tabe = tabe + r[xa].split(" ")[1] + ",";
-                        }
-                        if (!tabe.equals(tab)) {
-                            String tabl[] = tabe.replaceAll(tab,"").split(",");
-                            String a = "";
-                            for (int xb = 0; xb < tabl.length; xb ++) {
-                                a = a + tabl[xb]  + "'null';";
-                            }
-                            c.setINFO(a + add);
-                        } else {
-                            c.setINFO(add);
-                        }
-                        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
-                        c.setHiredate(new Date());
-                        if (Mtree.containsKey(t.getName())) {
-                            String a = c.getINFO();
-                            String id = a.substring(a.indexOf("id"));
-                            id = id.replaceFirst("id'","");
-                            id = id.substring(0,id.indexOf("'"));
-                            System.out.println(id);
-                            c.setId(Integer.valueOf(id));
-                        } else {
-                            c.setId(tree.size());
-                        }
-                        if (Mtree.containsKey(t.getName())) {
-                            Mtree.get(t.getName()).add(c);
-                        } else {
-                            tree.add(c);
-                        }
-
-                        writeMessage = "1";
-                    }
-                }
-
+                writeMessage = INSERT.in(sp);
             }
             /**
              *
@@ -244,413 +186,22 @@ public class DoIT {
              * 搜索功能实现
              */
             if (sp[0].equals("select")) {
-                String sl = sp[1];
-                if (Mtree.containsKey(sp[3])) {
-                    if (sl.equals("*")) {
-                        try {
-                            if (sp[2].equals("from")) {
-                                if (sp[4].equals("where")) {
-                                    try {
-                                        if (sp[6].equals("like")) {
-                                            String a = Mtree.get(sp[3]).forI(sp[5]);
-                                            String b[] = a.split("§");
-                                            writeMessage = "";
-                                            for (int x=0;x < b.length; x ++) {
-                                                COREINFORMATION emp = ClassInstanceFactory.create(COREINFORMATION.class, b[x]) ;	// 工具类自动设置
-                                                String c = emp.getINFO();
-                                                String d = c.substring(c.indexOf(sp[5]));
-                                                d = d.substring(0,d.indexOf(";"));
-                                                d = d.replaceAll(sp[5],"");
-                                                if (d.contains(sp[7])) {
-                                                    writeMessage = writeMessage + c + "§";
-                                                }
-                                            }
-                                            return writeMessage;
-                                        }
-                                    } catch (Exception e) {
-
-                                    }
-                                    if (sp[5].contains("id=")) {
-                                        String value = "id:" +sp[5].split("=")[1] + "|hiredate:2022-07-27|INFO:null|table:null§";
-                                        COREINFORMATION c = ClassInstanceFactory.create(COREINFORMATION.class, value) ;	// 工具类自动设置
-                                        COREINFORMATION resu = (COREINFORMATION) Mtree.get(sp[3]).getId(c);
-                                        writeMessage = resu.toString();
-                                        return writeMessage;
-                                    } else if (sp[5].contains("=")){
-                                        sp[5] = sp[5].replaceAll("=","'") + "'";
-                                        String a = Mtree.get(sp[3]).forI(sp[5]);
-                                        writeMessage = a;
-                                        return writeMessage;
-                                    }
-                                }
-
-                            } else {
-                                return Mtree.get(sp[3]).forW();
-                            }
-                        } catch (Exception e) {
-                            String a = Mtree.get(sp[3]).forW();
-                            writeMessage = a;
-                            return a;
-                        }
-                    }
-
-                    if (sl.equals("counts")) {
-                        if (sp[2].equals("from")) {
-                            writeMessage = String.valueOf(Mtree.get(sp[3]).size());
-                            return writeMessage;
-                        }
-                    } else if(!sl.equals("*")){
-                        try {
-                            if (sl.contains(",")) {
-                                try {
-                                    if (sp[4].equals("where")) {
-                                        try {
-                                            if (sp[6].equals("like")) {
-                                                String a = Mtree.get(sp[3]).forI(sp[5]);
-                                                String b[] = a.split("§");
-                                                writeMessage = "---" + sp[1] + "-------§";
-                                                for (int x=0;x < b.length; x ++) {
-                                                    COREINFORMATION emp = ClassInstanceFactory.create(COREINFORMATION.class, b[x]) ;	// 工具类自动设置
-                                                    String c = emp.getINFO();
-                                                    String d = c.substring(c.indexOf(sp[5]));
-                                                    d = d.substring(0,d.indexOf(";"));
-                                                    d = d.replaceAll(sp[5],"");
-                                                    if (d.contains(sp[7])) {
-                                                        String r[] = sp[1].split(",");
-                                                        for (int y = 0 ;y < r.length ; y ++) {
-                                                            d = c.substring(c.indexOf(r[y]));
-                                                            d = d.substring(0,d.indexOf(";"));
-                                                            d = d.replaceAll(r[y] + "'","");
-                                                            d = d.replaceAll("'","");
-                                                            writeMessage = writeMessage + d + "|";
-                                                        }
-                                                        writeMessage = writeMessage + "§";
-                                                    }
-                                                }
-                                                return writeMessage;
-                                            }
-                                        }catch (Exception e) {}
-                                        if (sp[5].contains("id=")) {
-                                            String value = "id:" +sp[5].split("=")[1] + "|hiredate:2022-07-27|INFO:null|table:null§";
-                                            COREINFORMATION c = ClassInstanceFactory.create(COREINFORMATION.class, value) ;	// 工具类自动设置
-                                            String i[] = sl.split(",");
-                                            writeMessage = "";
-                                            for (int x =0 ; x < i.length; x ++) {
-                                                String a= Mtree.get(sp[3]).getId(c,i[x]);
-                                                if (!a.equals("")) {
-                                                    writeMessage = writeMessage + a;
-                                                }
-                                            }
-                                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                                            return writeMessage;
-                                        } else {
-                                            String i[] = sl.split(",");
-                                            writeMessage = "";
-                                            sp[5] = sp[5].replaceAll("=","'") + "'";
-
-                                            for (int x =0 ; x < i.length; x ++) {
-                                                String a=  Mtree.get(sp[3]).select(i[x],sp[3],sp[5]);
-                                                if (!a.equals("")) {
-                                                    writeMessage = writeMessage + a;
-                                                }
-                                            }
-                                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                                            return writeMessage;
-                                        }
-
-                                    }
-                                } catch (Exception e) {
-                                    String i[] = sl.split(",");
-                                    writeMessage = "";
-                                    for (int x =0 ; x < i.length; x ++) {
-                                        String a= Mtree.get(sp[3]).select(i[x],sp[3]);
-                                        if (!a.equals("")) {
-                                            writeMessage = writeMessage + a;
-                                        }
-                                    }
-                                    writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                                    return writeMessage;
-                                }
-
-                            } else {
-                                if (sp[4].equals("where")) {
-                                    try {
-                                        if (sp[6].equals("like")) {
-                                            String a = Mtree.get(sp[3]).forI(sp[5]);
-                                            String b[] = a.split("§");
-                                            writeMessage = "+--" + sp[1] + "------+§";
-                                            for (int x=0;x < b.length; x ++) {
-                                                COREINFORMATION emp = ClassInstanceFactory.create(COREINFORMATION.class, b[x]) ;	// 工具类自动设置
-                                                String c = emp.getINFO();
-                                                String d = c.substring(c.indexOf(sp[5]));
-                                                d = d.substring(0,d.indexOf(";"));
-                                                d = d.replaceAll(sp[5],"");
-                                                if (d.contains(sp[7])) {
-                                                    d = c.substring(c.indexOf(sp[1]));
-                                                    d = d.substring(0,d.indexOf(";"));
-                                                    d = d.replaceAll(sp[1] + "'","");
-                                                    d = d.replaceAll("'","");
-                                                    writeMessage = writeMessage + d + "§";
-                                                }
-                                            }
-                                            return writeMessage;
-                                        }
-                                    }catch (Exception e) {}
-
-                                    if (sp[5].contains("id=")) {
-                                        String value = "id:" +sp[5].split("=")[1] + "|hiredate:2022-07-27|INFO:null|table:null§";
-                                        COREINFORMATION c = ClassInstanceFactory.create(COREINFORMATION.class, value) ;	// 工具类自动设置
-                                        writeMessage = Mtree.get(sp[3]).getId(c,sp[1]);
-                                    } else {
-                                        sp[5] = sp[5].replaceAll("=","'") + "'";
-                                        writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3],sp[5]);
-                                    }
-                                } else {
-                                    writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3]);
-                                }
-                                writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                                return writeMessage;
-                            }
-
-                        } catch (Exception e) {
-                            writeMessage = Mtree.get(sp[3]).select(sp[1],sp[3]);
-                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                            return writeMessage;
-                        }
-
-                    }
-                } else {
-                    if (sl.equals("*")) {
-                        if (sp[2].equals("from")) {
-                            try {
-                                if (sp[4].equals("where")) {
-                                    sp[5] = sp[5].replaceAll("=","'") + "'";
-                                    String a = tree.forTa(sp[3],sp[5]);
-                                    writeMessage = a;
-                                    return  writeMessage;
-                                }
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    } else
-                    if (sl.equals("counts")) {
-                        if (sp[2].equals("from")) {
-                            writeMessage = String.valueOf(tree.num(sp[3]));
-                            return writeMessage;
-                        }
-                    } else if(!sp.equals("*")){
-                        try {
-                            if (sl.contains(",")) {
-                                try {
-                                    if (sp[4].equals("where")) {
-                                            String i[] = sl.split(",");
-                                            writeMessage = "";
-                                            sp[5] = sp[5].replaceAll("=","'") + "'";
-
-                                            for (int x =0 ; x < i.length; x ++) {
-                                                String a=  tree.select(i[x],sp[3],sp[5]);
-                                                if (!a.equals("")) {
-                                                    writeMessage = writeMessage + a;
-                                                }
-                                            }
-                                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                                            return writeMessage;
-
-                                    }
-                                } catch (Exception e) {
-                                    String i[] = sl.split(",");
-                                    writeMessage = "";
-                                    for (int x =0 ; x < i.length; x ++) {
-                                        String a= tree.select(i[x],sp[3]);
-                                        if (!a.equals("")) {
-                                            writeMessage = writeMessage + a;
-                                        }
-                                    }
-                                    writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                                    return writeMessage;
-                                }
-
-                            } else {
-                                if (sp[4].equals("where")) {
-                                        sp[5] = sp[5].replaceAll("=","'") + "'";
-                                        writeMessage = tree.select(sp[1],sp[3],sp[5]);
-                                } else {
-                                    writeMessage = tree.select(sp[1],sp[3]);
-                                }
-                                writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                                return writeMessage;
-                            }
-
-                        } catch (Exception e) {
-                            writeMessage = tree.select(sp[1],sp[3]);
-                            writeMessage = "+--" + sl + "--+\n" + writeMessage;
-                            return writeMessage;
-                        }
-                    }
-
-                    String a = tree.forT(sp[3]);
-                    writeMessage = a;
-                }
-
+                writeMessage = SELECT.select(sp);
+                return writeMessage;
             }
             /**
              * @Date 2022-07-14
              * 删除属性
              */
             if (sp[0].equals("delete")) {
-                if (sp[3].equals("where")) {
-                    String table = sp[2];
-                    if (sp[4].contains("=")) {
-                        sp[4] = sp[4].replaceAll("=","'");
-                        sp[4] = sp[4] + "'";
-                    }
-                    if (Mtree.containsKey(table)) {
-                        Mtree.get(table).deleteBy(table,sp[4]);
-                    } else {
-                        tree.deleteBy(table,sp[4]);
-                    }
-
-                    writeMessage = "1";
-                }
+                writeMessage = DELETE.delete(sp);
             }
             /**
              * 更新数据功能
              * 已知Bug: 2022-07-15:数据不全 已修复
              */
             if (sp[0].equals("update")) {
-                if (sp[2].equals("set")) {
-                    sp[5] = sp[5].replaceAll("=","'") + "'";
-                    sp[5] = sp[5].replaceAll("\"","");
-                    sp[3] = sp[3].replaceAll("\"","");
-                    String a;
-                    if (!Mtree.containsKey(sp[1])) {
-                        a = tree.forT(sp[1],sp[5]);
-                    } else {
-                        a = Mtree.get(sp[1]).forT(sp[1],sp[5]);
-                    }
-                    String table = sp[1];
-                    String work = sp[3];
-                    String ca[] = work.split("=");
-                    work = work.replaceAll("=","'") + "';";
-                    String res[] = a.split("\\|");
-                    int ind = res[2].lastIndexOf(ca[0]);
-                    String handle = res[2].substring(0,ind);
-                    int i = res[2].indexOf(work.split("'")[0]);
-                    String w2 = res[2].substring(i);
-                    w2 = w2.replaceFirst("'","");
-                    w2 = w2.replaceAll(work.split("'")[0],"");
-                    w2 = w2.substring(0,w2.indexOf("'"));
-                    String end = res[2].substring(ind + work.split("'")[0].length() + w2.length() + 1);
-                    if (handle.contains("'")) {
-                        handle = res[0] + "|" + res[1] + "|" + handle + work.replaceFirst("';","") + end + "|table:" + table + "§";
-                    } else {
-                        handle = res[0] + "|" + res[1] + "|" + handle + work.replaceFirst("';","") + end + "|table:" + table + "§";
-                    }
-                    System.out.println(handle);
-                    COREINFORMATION c = add(handle);
-                    if (Mtree.containsKey(table)) {
-                        Mtree.get(sp[1]).deleteBy(sp[1],sp[5]);
-                        Mtree.get(sp[1]).add(c);
-                    } else {
-                        tree.deleteBy(sp[1],sp[5]);
-                        tree.add(c);
-                    }
-
-                    writeMessage = "1";
-                }
-            }
-            /*
-                以下是缓存功能
-             */
-            if (sp[0].equals("cache")) {
-                if (sp[1].equals("insert")) {
-                    if (sp[2].equals("into")) {
-
-                        if (sp[4].equals("values")) {
-                            String ch = sp[3];
-                            //数据表
-                            String res[] = ch.split("\\(");
-                            sp[5] = sp[5].replaceAll("\\(", "");
-                            sp[5] = sp[5].replaceAll("\\)", "");
-                            res[1] = res[1].replaceAll("\\)", "");//去除(和)
-                            String tabler[] = res[1].split(",");//为输入中的数据格式
-                            Table t = ta.get(res[0]);//获取表格中的数据格式
-                            String res2[] = t.getTable().split(",");
-                            COREINFORMATION c = new COREINFORMATION();
-                            String value[] = sp[5].split(",");
-                            String add = "";//这是要处理的数据,将要保存
-                            String tab = "";
-                            int y = 0;
-                            int x;
-                            for (x = 0; x < res2.length; x++) {
-                                String prof[] = res2[y].split(" ");
-                                try {
-                                    if (prof[1].equals(tabler[x])) {//检验是否匹配 prof[0]为格式,prof[1[为数据名称
-                                        add = add + prof[1] + value[x] + ";";
-                                        tab = tab + tabler[x] + ",";
-                                        if (y == res.length) {
-                                            break;
-                                        }
-                                    } else {
-                                        y++;
-                                        x--;
-                                    }
-                                } catch (Exception e) {
-                                }
-                            }
-                            c.setId(tree.size());
-                            c.setTable(res[0]);
-                            String r[] = t.getTable().split(",");
-                            String tabe = "";
-                            for (int xa = 0; xa < r.length; xa++) {
-                                tabe = tabe + r[xa].split(" ")[1] + ",";
-                            }
-                            String tabl[] = tabe.replaceAll(tab,"").split(",");
-                            String a = "";
-                            for (int xb = 0; xb < tabl.length; xb ++) {
-                                a = a + tabl[xb]  + "'null';";
-                            }
-                            c.setINFO(a + add);
-                            SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
-                            c.setHiredate(new Date());
-                            tree.add(c);
-                            writeMessage = "1";
-                        }
-                    }
-
-                }
-                if (sp[1].equals("getTime")) {
-                    writeMessage = String.valueOf(cache.getDelaySeconds(Long.parseLong(sp[2])));
-                }
-                if (sp[1].equals("insert")) {
-                    if (sp[2].contains("§")) {
-                        String res[] = sp[2].split("§");
-                        int x;
-                        for (x = 0; x < res.length; x++) {
-                            COREINFORMATION emp = ClassInstanceFactory.create(COREINFORMATION.class, res[x]);    // 工具类自动设置
-                            cache.put(emp.getId(),emp);
-                        }
-                        writeMessage = String.valueOf(x);
-                    } else {
-                        COREINFORMATION emp = ClassInstanceFactory.create(COREINFORMATION.class, sp[2]) ;	// 工具类自动设置
-                        cache.put(cache.getCacheObjects().size(),emp);
-                        writeMessage = "1";
-                    }
-                }
-                if (sp[1].equals("get")) {
-                    writeMessage = " ";
-                    for (int x = 0; x <  cache.getCacheObjects().size(); x++) {
-                        writeMessage = writeMessage + "|" + cache.get(x);
-                    }
-                }
-                if (sp[1].equals("submit")) {
-                    int x;
-                    for (x = 0; x < cache.getCacheObjects().size(); x++) {
-                         tree.add(cache.get(x));
-                    }
-                    writeMessage = String.valueOf(x);
-                }
+                writeMessage = UPDATE.update(sp);
             }
             if (sp[0].equals("status")) {
                 writeMessage = "版本:" + version + "\n历史连接数:" + all_Connect + "\n目前连接数:" + now_Connect + "\n权限:" + Jurisdiction

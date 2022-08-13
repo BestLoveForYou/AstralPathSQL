@@ -527,6 +527,31 @@ public class BalancedBinaryTree<T> {
         });
         return res.toString();
     }
+    public void clear(String table) {
+        List<Integer> res = new ArrayList<>();
+        traverse(root, n -> {
+            COREINFORMATION a = (COREINFORMATION) n.data;
+            if (a.getTable().equals(table)) {
+                res.add(a.getId());
+            }
+        });
+        for (int i = 0; i < res.size(); i++) {
+            if (Mtree.containsKey(table)) {
+                System.out.println(res.get(i));
+                try {
+                    Mtree.get(table).remove(new COREINFORMATION(res.get(i)));
+                } catch (Exception e) {
+                }
+
+            } else {
+                try {
+                    MainServer.tree.remove(new COREINFORMATION(res.get(i)));
+                } catch (Exception e) {}
+
+            }
+
+        }
+    }
     private int getMaxHeight(Node node) {
         int[] height = new int[1];
         traverse(node, n -> {

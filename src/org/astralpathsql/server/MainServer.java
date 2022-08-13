@@ -22,6 +22,7 @@ import java.nio.channels.SocketChannel;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.StampedLock;
 
 import static org.astralpathsql.print.ColorTest.getFormatLogString;
 
@@ -29,8 +30,9 @@ import static org.astralpathsql.print.ColorTest.getFormatLogString;
  *
  */
 public class MainServer {
-    public static String version = "1.115.20220805";
+    public static String version = "1.116.20220814";
     public static BalancedBinaryTree<COREINFORMATION> tree = new BalancedBinaryTree<COREINFORMATION>();
+    public static StampedLock lock = new StampedLock();
     public static Integer now_Connect = 0; //目前连接数
     public static Integer all_Connect = 0;//历史连接数
     public static Selector selector = null;
@@ -80,7 +82,6 @@ public class MainServer {
         try {
             Thread.sleep(1000);
             long start = System.currentTimeMillis();
-
             System.out.println(getFormatLogString("初始化中",34,1));
             Filer.createInFirst();//对象保存文件
             Table.read();//生成表
@@ -93,16 +94,12 @@ public class MainServer {
             tree = Add.addin(tree);//二叉树加载
             System.out.println(getFormatLogString("成功!",32,1));
             System.out.println(getFormatLogString("线程池加载中",34,1));
-
             System.out.println(getFormatLogString("成功!",32,1));
             all_Connect = Integer.valueOf(prop.getProperty("all_connect"));
-
             executorService.submit(() -> {
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {
-
-                }
+                } catch (InterruptedException e) {}
                 System.out.println(getFormatLogString("服务端命令集启动成功!",32,1));
                 while (true) {
                     String msg = InputUtil.getString(">");	// 提示信息
@@ -120,15 +117,12 @@ public class MainServer {
                     }
                 }
             });
-
             // 打开一个服务端的Socket的连接通道
             System.out.println(getFormatLogString("打开服务端连接通道",34,1));
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(false); 					// 设置非阻塞模式
-
             serverSocketChannel.bind(new InetSocketAddress(PORT)); 			// 服务绑定端口
             // 打开一个选择器，随后所有的Channel都要注册到此选择器之中
-
             selector = Selector.open();
             // 将当前的ServerSocketChannel统一注册到Selector之中，接受统一的管理
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
@@ -137,7 +131,6 @@ public class MainServer {
              */
             USER = Filer.readUser();
             Filer.checkIP();
-
             long end = System.currentTimeMillis();
             System.out.println(getFormatLogString("全部启动完成! 共耗时:" + (end - start) + "ms",32,1));
             System.out.println(getFormatLogString("服务端启动程序成功，该程序在 " + PORT + " 端口上监听\n最大可用内存为:" + MaxMemory,35,4));
@@ -150,7 +143,6 @@ public class MainServer {
             });
             // 所有的连接处理都需要被Selector所管理，也就是说只要有新的用户连接，那么就通过Selector处理
             int keySelect = 0; 											// 接收连接状态
-
             while ((keySelect = selector.select()) > 0) { 					// 持续等待连接
                 selectedKeys = selector.selectedKeys();
                 selectionIter = selectedKeys.iterator();
@@ -169,7 +161,6 @@ public class MainServer {
             }
             executorService.shutdown();									// 关闭线程池
             serverSocketChannel.close();									// 关闭服务端通道
-
         } catch (NumberFormatException e) {
             System.out.println("启动参数缺失！");
         } catch (Exception e) {

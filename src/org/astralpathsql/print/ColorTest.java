@@ -7,6 +7,9 @@ public class ColorTest {
      * @param content 要打印的内容
      */
     public static String getFormatLogString(String content, int colour, int type) {
+        if (System.getProperty("os.name").contains("Windows")) {
+            return content;
+        }
         boolean hasType = type != 1 && type != 3 && type != 4;
         if (hasType) {
             return String.format("\033[%dm%s\033[0m", colour, content);
