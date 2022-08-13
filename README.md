@@ -37,6 +37,10 @@ The config of it (info.properties) include port , all_connect , and change_time
 # v1.110 series 
  In this series, there have been a large range of changes, and other items except for the table class can still be supported downwards.
 This version has a high probability of bugs (because the engine has changed)
+ ## 1.116.20220814
+ - Fixed the problem of incomplete data insertion
+ - Fixed the problem of atomicity
+ - Make the procedure more orderly
  ## 1.115.20220805-NatusVincere
  - log system
  - Phase final version, expected after 1 month next update
