@@ -9,15 +9,17 @@ public class UPDATE {
     public static String update(String sp[]) {
         String writeMessage = "-1";
         if (sp[2].equals("set")) {
-            sp[5] = sp[5] + "'" + sp[7] + "'";
-            sp[5] = sp[5].replaceAll("\"","");
+            sp[7] = sp[7] + "'" + sp[9] + "'";
+            sp[7] = sp[7].replaceAll("\"","");
             sp[3] = sp[3].replaceAll("\"","");
+            sp[3] = sp[3] + "=" + sp[5];
             String a;
             if (!Mtree.containsKey(sp[1])) {
-                a = tree.forT(sp[1],sp[5]);
+                a = tree.forT(sp[1],sp[7]);
             } else {
-                a = Mtree.get(sp[1]).forT(sp[1],sp[5]);
+                a = Mtree.get(sp[1]).forT(sp[1],sp[7]);
             }
+            System.out.println(a);
             String table = sp[1];
             String work = sp[3];
             String ca[] = work.split("=");
@@ -39,10 +41,10 @@ public class UPDATE {
             System.out.println(handle);
             COREINFORMATION c = add(handle);
             if (Mtree.containsKey(table)) {
-                Mtree.get(sp[1]).deleteBy(sp[1],sp[5]);
+                Mtree.get(sp[1]).deleteBy(sp[1],sp[7]);
                 Mtree.get(sp[1]).add(c);
             } else {
-                tree.deleteBy(sp[1],sp[5]);
+                tree.deleteBy(sp[1],sp[7]);
                 tree.add(c);
             }
 

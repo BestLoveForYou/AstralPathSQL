@@ -30,7 +30,7 @@ import static org.astralpathsql.print.ColorTest.getFormatLogString;
  *
  */
 public class MainServer {
-    public static String version = "1.116.20220814";
+    public static String version = "1.117.20220827";
     public static BalancedBinaryTree<COREINFORMATION> tree = new BalancedBinaryTree<COREINFORMATION>();
     public static StampedLock lock = new StampedLock();
     public static Integer now_Connect = 0; //目前连接数

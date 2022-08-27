@@ -1,0 +1,46 @@
+
+Server|2022-08-27 09:16:36|Server started!port:3306
+0.0.0.0|2022-08-27 09:16:43|select * from user
+0.0.0.0|2022-08-27 09:17:14|update user set username = yby520 where id = 1
+0.0.0.0|2022-08-27 09:17:30|ssajosdajodsaisdaishioafhiodHIPJIFDAJIszHILFHfq3h8asdgufangeagiaeguigusagsffghaho8ewhodaladshishdwhisjkshkdahxzbx nwjasfdvhdzkzdgusd us hisg h hksd hilEYUGDULGD
+
+Server|2022-08-27 09:18:48|Server started!port:3306
+0.0.0.0|2022-08-27 09:18:51|update user set username = yby520 where id = 1
+0.0.0.0|2022-08-27 09:19:04|select * from user
+
+Server|2022-08-27 09:19:36|Server started!port:3306
+0.0.0.0|2022-08-27 09:19:38|update user set username = yby520 where id = 1
+0.0.0.0|2022-08-27 09:19:43|exit
+
+Server|2022-08-27 09:20:22|Server started!port:3306
+0.0.0.0|2022-08-27 09:20:24|update user set username = yby520 where id = 1
+
+Server|2022-08-27 09:21:51|Server started!port:3306
+0.0.0.0|2022-08-27 09:21:53|update user set username = yby520 where id = 1
+0.0.0.0|2022-08-27 09:21:59|update user set username = yby520 where id = 1
+
+Server|2022-08-27 09:22:53|Server started!port:3306
+0.0.0.0|2022-08-27 09:23:00|show tables
+0.0.0.0|2022-08-27 09:23:04|show table
+0.0.0.0|2022-08-27 09:23:24|show 
+0.0.0.0|2022-08-27 09:23:26|desc
+0.0.0.0|2022-08-27 09:23:52|drop table TEST
+0.0.0.0|2022-08-27 09:23:57|select * from test
+
+Server|2022-08-27 09:24:05|Server started!port:3306
+0.0.0.0|2022-08-27 09:24:08|desc
+0.0.0.0|2022-08-27 09:24:37|drop table cac
+0.0.0.0|2022-08-27 09:24:45|drop table Test
+0.0.0.0|2022-08-27 09:24:51|save
+
+Server|2022-08-27 09:25:05|Server started!port:3306
+0.0.0.0|2022-08-27 09:25:17|drop table t
+0.0.0.0|2022-08-27 09:25:18|save
+
+Server|2022-08-27 09:25:38|Server started!port:3306
+0.0.0.0|2022-08-27 09:25:49|update user set username = yby520 where id = 1
+
+Server|2022-08-27 09:26:18|Server started!port:3306
+0.0.0.0|2022-08-27 09:26:26|select * from user
+0.0.0.0|2022-08-27 09:26:41|update user set username = yby520 where id = 1
+0.0.0.0|2022-08-27 09:26:47|exit
