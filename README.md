@@ -1,5 +1,5 @@
-In the latest version of UPDATE, it will be solved in the next version
-# AstralPathSQL
+# AstralPathSQL Default Version
+Preview: A multi-node high concurrency version will be released in half a year!   
    Creator BestLoveForYou  
 
    website:[website](http://www.godserver.cn/)  
@@ -7,7 +7,7 @@ In the latest version of UPDATE, it will be solved in the next version
    email:yaoboyulove@163.com  
    
    If you are interested in this project, please give me a star!  
-   2022-07-17 0:4 Beijing time
+   
 # Brief Introduction:
 - This is a database system, completely based on java!
 - The data structure used is a balanced binary tree.
@@ -38,7 +38,10 @@ The config of it (info.properties) include port , all_connect , and change_time
 # v1.110 series 
  In this series, there have been a large range of changes, and other items except for the table class can still be supported downwards.
 This version has a high probability of bugs (because the engine has changed)
- ## 1.116.20220814
+ ## 1.117.20220827
+ - Fixed the parsing problem of data update.
+ - Optimization
+## 1.116.20220814
  - Fixed the problem of incomplete data insertion
  - Fixed the problem of atomicity
  - Make the procedure more orderly
